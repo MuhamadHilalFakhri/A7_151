@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -43,6 +44,8 @@ import com.example.projekakhir.ui.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
 import com.example.projekakhir.ui.viewmodel.pasien.HomeViewModelPasien
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object DestinasiHome : DestinasiNavigasi {
     override val route = "home"
@@ -172,13 +175,19 @@ fun PasienLayout(
             )
         }
     }
-}
-@Composable
+}@Composable
 fun PasienCard(
     pasien: Pasien,
     modifier: Modifier = Modifier,
     onDeleteClick: (Pasien) -> Unit = {}
 ) {
+    // Format tanggal menggunakan SimpleDateFormat
+    val formattedTanggalLahir = remember(pasien.tanggal_lahir) {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(pasien.tanggal_lahir)
+        parsedDate?.let { format.format(it) } ?: pasien.tanggal_lahir // Handle null case
+    }
+
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
@@ -214,7 +223,7 @@ fun PasienCard(
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "Tanggal Lahir: ${pasien.tanggal_lahir}",
+                text = "Tanggal Lahir: $formattedTanggalLahir",
                 style = MaterialTheme.typography.titleMedium
             )
         }
