@@ -9,12 +9,15 @@ import com.example.projekakhir.TerapiApplications
 import com.example.projekakhir.ui.viewmodel.pasien.DetailPasienViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.HomeViewModelPasien
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienViewModel
+import com.example.projekakhir.ui.viewmodel.pasien.UpdatePasienViewModel
 
 object PenyediaViewModel{
     val Factory = viewModelFactory {
         initializer { HomeViewModelPasien(aplikasiTerapi().container.pasienRepository) }
         initializer { InsertPasienViewModel(aplikasiTerapi().container.pasienRepository) }
         initializer { DetailPasienViewModel(createSavedStateHandle(),aplikasiTerapi().container.pasienRepository) }
+        initializer { UpdatePasienViewModel(createSavedStateHandle(),aplikasiTerapi().container.pasienRepository) }
+
     }
 }
 
