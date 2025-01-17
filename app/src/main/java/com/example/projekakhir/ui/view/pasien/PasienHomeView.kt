@@ -1,11 +1,15 @@
 package com.example.projekakhir.ui.view.pasien
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -22,6 +26,29 @@ import com.example.projekakhir.model.Pasien
 
 
 
+@Composable
+fun PasienLayout(
+    pasien: List<Pasien>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Pasien) -> Unit,
+    onDeleteClick: (Pasien) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(pasien) { pasien ->
+            PasienCard(
+                pasien = pasien,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(pasien) },
+                onDeleteClick = { onDeleteClick(pasien) }
+            )
+        }
+    }
+}
 @Composable
 fun PasienCard(
     pasien: Pasien,
