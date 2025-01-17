@@ -3,10 +3,12 @@ package com.example.projekakhir.ui.view.pasien
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +32,36 @@ import androidx.compose.ui.unit.dp
 import com.example.projekakhir.R
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
+
+
+
+@Composable
+fun HomeStatus(
+    homeUiState: HomeUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (Pasien) -> Unit = {},
+    onDetailClick: (Int) -> Unit
+) {
+    when (homeUiState) {
+        is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+
+        is HomeUiState.Success ->
+            if (homeUiState.pasien.isEmpty()) {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Tidak ada data pasien")
+                }
+            } else {
+                PasienLayout(
+                    pasien = homeUiState.pasien,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.idPasien) },
+                    onDeleteClick = { onDeleteClick(it) }
+                )
+            }
+        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+    }
+}
 
 @Composable
 fun OnLoading(modifier: Modifier = Modifier){
