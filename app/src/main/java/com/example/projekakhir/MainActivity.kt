@@ -20,8 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProjekAkhirTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    TerapiApp(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
