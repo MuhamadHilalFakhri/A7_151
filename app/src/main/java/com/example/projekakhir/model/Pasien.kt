@@ -4,10 +4,10 @@ import kotlinx.serialization.*
 
 @Serializable
 data class Pasien(
-    val idPasien: Int,
-    val namaPasien: String,
+    val id_pasien: Int,
+    val nama_pasien: String,
     val alamat: String,
-    val nomorTelepon: String,
+    val nomor_telepon: String,
     val tanggal_lahir: String,
     val riwayat_medikal: String
 )
