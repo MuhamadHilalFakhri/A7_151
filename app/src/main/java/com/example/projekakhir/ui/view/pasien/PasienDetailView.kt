@@ -48,7 +48,7 @@ fun DetailPasienView(
     idPasien: Int,
     modifier: Modifier = Modifier,
     viewModel: DetailPasienViewModel = viewModel(factory = PenyediaViewModel.Factory),
-    onEditClick: (Int) -> Unit = {},
+    onEditClick: (Int) -> Unit = {}, // Callback untuk tombol edit
     navigateBack: () -> Unit
 ) {
     Scaffold(
@@ -62,7 +62,7 @@ fun DetailPasienView(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onEditClick(idPasien) },
+                onClick = { onEditClick(idPasien) }, // Navigasi ke halaman edit
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -75,7 +75,6 @@ fun DetailPasienView(
     ) { innerPadding ->
         val detailUiState by viewModel.detailUiState.collectAsState()
 
-        // Body displaying the patient details based on the state
         when (val state = detailUiState) {
             is DetailUiState.Loading -> {
                 OnLoading(modifier = Modifier.fillMaxSize())
@@ -86,7 +85,6 @@ fun DetailPasienView(
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    // Display the patient details
                     ItemDetailPasien(pasien = state.pasien)
                 }
             }
