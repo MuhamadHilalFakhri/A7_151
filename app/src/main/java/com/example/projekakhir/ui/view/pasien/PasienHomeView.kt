@@ -86,7 +86,7 @@ fun HomeScreen(
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
             onDeleteClick = {
-                viewModel.deletePasien(it.idPasien)
+                viewModel.deletePasien(it.id_pasien)
                 viewModel.getPasien()
             }
         )
@@ -114,7 +114,7 @@ fun HomeStatus(
                 PasienLayout(
                     pasien = homeUiState.pasien,
                     modifier = modifier.fillMaxWidth(),
-                    onDetailClick = { onDetailClick(it.idPasien) },
+                    onDetailClick = { onDetailClick(it.id_pasien) },
                     onDeleteClick = { onDeleteClick(it) }
                 )
             }
@@ -193,7 +193,7 @@ fun PasienCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = pasien.namaPasien,
+                    text = pasien.nama_pasien,
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(Modifier.weight(1f))
@@ -210,7 +210,7 @@ fun PasienCard(
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "Nomor Telepon: ${pasien.nomorTelepon}",
+                text = "Nomor Telepon: ${pasien.nomor_telepon}",
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
