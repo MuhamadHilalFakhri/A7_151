@@ -20,10 +20,8 @@ class DetailPasienViewModel(
     private val pasienRepo: PasienRepository
 ) : ViewModel() {
 
-    // Ambil ID Pasien dari SavedStateHandle
     private val _idPasien: Int = checkNotNull(savedStateHandle[DestinasiDetail.idpasien])
 
-    // MutableStateFlow untuk mengatur UI state
     private val _detailUiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
     val detailUiState: StateFlow<DetailUiState> = _detailUiState
 
@@ -31,7 +29,6 @@ class DetailPasienViewModel(
         getDetailPasien()
     }
 
-    // Fungsi untuk mengambil detail pasien
     fun getDetailPasien() {
         viewModelScope.launch {
             try {
