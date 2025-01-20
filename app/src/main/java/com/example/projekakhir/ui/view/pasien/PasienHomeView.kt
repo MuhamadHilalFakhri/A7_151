@@ -46,6 +46,7 @@ import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
 import com.example.projekakhir.ui.viewmodel.pasien.HomeViewModelPasien
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.TimeZone
 
 object DestinasiHome : DestinasiNavigasi {
     override val route = "home"
@@ -183,9 +184,16 @@ fun PasienCard(
 ) {
     // Format tanggal menggunakan SimpleDateFormat
     val formattedTanggalLahir = remember(pasien.tanggal_lahir) {
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(pasien.tanggal_lahir)
-        parsedDate?.let { format.format(it) } ?: pasien.tanggal_lahir // Handle null case
+        try {
+            val utcFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            utcFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }.parse(pasien.tanggal_lahir)
+            parsedDate?.let { utcFormat.format(it) } ?: pasien.tanggal_lahir
+        } catch (e: Exception) {
+            pasien.tanggal_lahir
+        }
     }
 
     Card(

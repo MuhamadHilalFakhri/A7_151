@@ -1,5 +1,7 @@
 package com.example.projekakhir.ui.view.pasien
 
+import android.app.DatePickerDialog
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,9 +17,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.navigation.DestinasiNavigasi
@@ -27,6 +31,7 @@ import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienUiEvent
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienUiState
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 object DestinasiEntryPasien: DestinasiNavigasi {
     override val route = "item_entry"
@@ -99,7 +104,6 @@ fun EntryBodyPasien(
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormInputPasien(
@@ -108,10 +112,30 @@ fun FormInputPasien(
     onValueChange: (InsertPasienUiEvent) -> Unit = {},
     enabled: Boolean = true
 ) {
+    val context = LocalContext.current
+
+    // DatePickerDialog initialization
+    val calendar = Calendar.getInstance()
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val formattedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
+                // Update only the tanggalLahir field, keeping other fields the same
+                onValueChange(insertUiEvent.copy(tanggalLahir = formattedDate))
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        // Each field should only update its specific value
         OutlinedTextField(
             value = insertUiEvent.namaPasien,
             onValueChange = { onValueChange(insertUiEvent.copy(namaPasien = it)) },
@@ -141,12 +165,15 @@ fun FormInputPasien(
 
         OutlinedTextField(
             value = insertUiEvent.tanggalLahir,
-            onValueChange = { onValueChange(insertUiEvent.copy(tanggalLahir = it)) },
+            onValueChange = { /* Disable direct input */ },
             label = { Text("Tanggal Lahir") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { datePickerDialog.show() },
+            enabled = false,
             singleLine = true
         )
+
 
         OutlinedTextField(
             value = insertUiEvent.riwayatMedikal,
