@@ -1,11 +1,15 @@
 package com.example.projekakhir.ui.view.sesiterapi
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -26,6 +30,31 @@ object DestinasiHome : DestinasiNavigasi {
     override val titleRes = "Home Terapis"
 }
 
+
+
+@Composable
+fun TerapisLayout(
+    terapis: List<Terapis>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Terapis) -> Unit,
+    onDeleteClick: (Terapis) -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(terapis) { terapis ->
+            TerapisCard(
+                terapis = terapis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onDetailClick(terapis) },
+                onDeleteClick = { onDeleteClick(terapis) }
+            )
+        }
+    }
+}
 
 @Composable
 fun TerapisCard(
