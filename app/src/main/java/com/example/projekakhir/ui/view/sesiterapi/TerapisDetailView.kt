@@ -36,14 +36,13 @@ object DestinasiDetailTerapis : DestinasiNavigasi {
     const val ID_TERAPIS = "id_terapis"
     val routeWithArg = "$route/{$ID_TERAPIS}"
     override val titleRes = "Detail Terapis"
-}
-@OptIn(ExperimentalMaterial3Api::class)
+}@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailTerapisView(
     idTerapis: Int,
     modifier: Modifier = Modifier,
     viewModel: DetailTerapisViewModel = viewModel(factory = PenyediaViewModel.Factory),
-    onEditClick: (Int) -> Unit = {},
+    onEditClick: (Int) -> Unit = {},  // Parameter onEditClick
     navigateBack: () -> Unit
 ) {
     Scaffold(
@@ -57,7 +56,9 @@ fun DetailTerapisView(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onEditClick(idTerapis) },
+                onClick = {
+                    onEditClick(idTerapis) // Menggunakan idTerapis untuk navigasi ke update
+                },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(16.dp)
             ) {
