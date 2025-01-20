@@ -44,7 +44,7 @@ import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.terapis.HomeUiState
 import com.example.projekakhir.ui.viewmodel.terapis.HomeViewModelTerapis
 
-object DestinasiHome : DestinasiNavigasi {
+object DestinasiHomeTerapis : DestinasiNavigasi {
     override val route = "hometrps"
     override val titleRes = "Home Terapis"
 }
@@ -62,7 +62,7 @@ fun HomeScreenTerapis(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CostumeTopAppBar(
-                title = DestinasiHome.titleRes,
+                title = DestinasiHomeTerapis.titleRes,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 onRefresh = {
