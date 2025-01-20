@@ -120,14 +120,14 @@ fun FormInputTerapis(
             singleLine = true
         )
 
-        OutlinedTextField(
-            value = insertUiEvent.idTerapis.toString(),
-            onValueChange = { onValueChange(insertUiEvent.copy(idTerapis = it.toIntOrNull() ?: 0)) },
-            label = { Text("ID Terapis") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
+//        OutlinedTextField(
+//            value = insertUiEvent.idTerapis.toString(),
+//            onValueChange = { onValueChange(insertUiEvent.copy(idTerapis = it.toIntOrNull() ?: 0)) },
+//            label = { Text("ID Terapis") },
+//            modifier = Modifier.fillMaxWidth(),
+//            enabled = enabled,
+//            singleLine = true
+//        )
 
         OutlinedTextField(
             value = insertUiEvent.spesialisasi,
