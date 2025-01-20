@@ -49,13 +49,13 @@ import java.util.Locale
 import java.util.TimeZone
 
 object DestinasiHome : DestinasiNavigasi {
-    override val route = "home"
+    override val route = "home pasien"
     override val titleRes = "Home Pasien"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeScreenPasien(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},

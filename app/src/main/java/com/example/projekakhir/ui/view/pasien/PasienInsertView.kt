@@ -34,8 +34,8 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 object DestinasiEntryPasien: DestinasiNavigasi {
-    override val route = "item_entry"
-    override val titleRes = "Entry Pasien"
+    override val route = "insert pasien"
+    override val titleRes = "Insert Pasien"
 }
 
 

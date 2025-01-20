@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 object DestinasiUpdate : DestinasiNavigasi {
-    override val route = "update"
+    override val route = "update pasien"
     const val idpasien = "idpasien"
     val routesWithArg = "$route/{$idpasien}"
     override val titleRes = "Update Pasien"
