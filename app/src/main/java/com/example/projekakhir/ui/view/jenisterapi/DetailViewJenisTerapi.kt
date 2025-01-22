@@ -5,20 +5,32 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
+import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailJenisTerapiUiState
+import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailJenisTerapiViewModel
 
 object DestinasiDetailJenisTerapi : DestinasiNavigasi {
     override val route = "detail_jenis_terapi"
@@ -27,7 +39,48 @@ object DestinasiDetailJenisTerapi : DestinasiNavigasi {
     override val titleRes = "Detail Jenis Terapi"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailJenisTerapiView(
+    idJenisTerapi: Int,
+    modifier: Modifier = Modifier,
+    viewModel: DetailJenisTerapiViewModel = viewModel(factory = PenyediaViewModel.Factory),
+    onEditClick: (Int) -> Unit = {},  // Parameter onEditClick untuk navigasi ke update
+    navigateBack: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiDetailJenisTerapi.titleRes,
+                canNavigateBack = true,
+                navigateUp = navigateBack,
+                onRefresh = { viewModel.getDetailJenisTerapi() }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    onEditClick(idJenisTerapi) // Menggunakan idJenisTerapi untuk navigasi ke update
+                },
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Jenis Terapi"
+                )
+            }
+        }
+    ) { innerPadding ->
+        val detailUiState by viewModel.detailUiState.collectAsState()
 
+        BodyDetailJenisTerapi(
+            modifier = Modifier.padding(innerPadding),
+            detailUiState = detailUiState,
+            retryAction = { viewModel.getDetailJenisTerapi() }
+        )
+    }
+}
 
 @Composable
 fun BodyDetailJenisTerapi(
