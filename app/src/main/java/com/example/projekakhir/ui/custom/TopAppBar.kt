@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui
+package com.example.projekakhir.ui.custom
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
