@@ -2,6 +2,7 @@ package com.example.projekakhir.ui.view.jenisterapi
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
+import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailJenisTerapiUiState
 
 object DestinasiDetailJenisTerapi : DestinasiNavigasi {
     override val route = "detail_jenis_terapi"
@@ -26,6 +28,40 @@ object DestinasiDetailJenisTerapi : DestinasiNavigasi {
 }
 
 
+
+@Composable
+fun BodyDetailJenisTerapi(
+    modifier: Modifier = Modifier,
+    detailUiState: DetailJenisTerapiUiState,
+    retryAction: () -> Unit = {}
+) {
+    when (detailUiState) {
+        is DetailJenisTerapiUiState.Loading -> {
+            OnLoading(modifier = modifier.fillMaxSize())
+        }
+
+        is DetailJenisTerapiUiState.Success -> {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                ItemDetailJenisTerapi(jenisTerapi = detailUiState.jenisTerapi)
+            }
+        }
+
+        is DetailJenisTerapiUiState.Error -> {
+            OnError(
+                retryAction = retryAction,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+
+        else -> {
+            Text("Unexpected")
+        }
+    }
+}
 
 @Composable
 fun ItemDetailJenisTerapi(
