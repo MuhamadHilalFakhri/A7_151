@@ -22,7 +22,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.CostumeTopAppBar
+import com.example.projekakhir.ui.custom.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.terapis.InsertTerapisUiEvent
 import com.example.projekakhir.ui.viewmodel.terapis.InsertTerapisUiState

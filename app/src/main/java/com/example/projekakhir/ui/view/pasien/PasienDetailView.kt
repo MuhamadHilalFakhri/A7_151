@@ -28,11 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.CostumeTopAppBar
+import com.example.projekakhir.ui.custom.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.DetailPasienViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.DetailUiState
-import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
