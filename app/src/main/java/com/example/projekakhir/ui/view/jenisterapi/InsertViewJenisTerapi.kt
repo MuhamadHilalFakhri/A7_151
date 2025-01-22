@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertJenisTerapiUiEvent
+import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertJenisTerapiUiState
 
 object DestinasiEntryJenisTerapi : DestinasiNavigasi {
     override val route = "item_entry_jenis_terapi"
@@ -20,6 +23,33 @@ object DestinasiEntryJenisTerapi : DestinasiNavigasi {
 }
 
 
+
+@Composable
+fun EntryBodyJenisTerapi(
+    insertUiState: InsertJenisTerapiUiState,
+    onJenisTerapiValueChange: (InsertJenisTerapiUiEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        modifier = modifier.padding(12.dp)
+    ) {
+        FormInputJenisTerapi(
+            insertUiEvent = insertUiState.insertUiEvent,
+            onValueChange = onJenisTerapiValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = onSaveClick,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Simpan")
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
