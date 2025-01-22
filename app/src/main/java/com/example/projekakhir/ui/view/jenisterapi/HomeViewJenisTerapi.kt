@@ -3,10 +3,12 @@ package com.example.projekakhir.ui.view.jenisterapi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.example.projekakhir.R
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
+import com.example.projekakhir.ui.viewmodel.sesiterapi.HomeUiStateJenisTerapi
 
 object DestinasiHomeJenisTerapi : DestinasiNavigasi {
     override val route = "homejenis"
@@ -37,6 +40,34 @@ object DestinasiHomeJenisTerapi : DestinasiNavigasi {
 }
 
 
+
+@Composable
+fun HomeStatusJenisTerapi(
+    homeUiState: HomeUiStateJenisTerapi,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (JenisTerapi) -> Unit = {},
+    onDetailClick: (Int) -> Unit
+) {
+    when (homeUiState) {
+        is HomeUiStateJenisTerapi.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+
+        is HomeUiStateJenisTerapi.Success ->
+            if (homeUiState.jenisTerapi.isEmpty()) {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Tidak ada data jenis terapi")
+                }
+            } else {
+                JenisTerapiLayout(
+                    jenisTerapi = homeUiState.jenisTerapi,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.id_jenis_terapi) },
+                    onDeleteClick = { onDeleteClick(it) }
+                )
+            }
+        is HomeUiStateJenisTerapi.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+    }
+}
 @Composable
 fun OnLoading(modifier: Modifier = Modifier){
     Image(
