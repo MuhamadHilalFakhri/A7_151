@@ -23,9 +23,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
-import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertJenisTerapiUiEvent
-import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertJenisTerapiUiState
-import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertJenisTerapiViewModel
+import com.example.projekakhir.ui.viewmodel.jenisterapi.InsertJenisTerapiUiEvent
+import com.example.projekakhir.ui.viewmodel.jenisterapi.InsertJenisTerapiUiState
+import com.example.projekakhir.ui.viewmodel.jenisterapi.InsertJenisTerapiViewModel
 import kotlinx.coroutines.launch
 
 object DestinasiEntryJenisTerapi : DestinasiNavigasi {

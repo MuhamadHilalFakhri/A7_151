@@ -29,8 +29,8 @@ import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
-import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailJenisTerapiUiState
-import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailJenisTerapiViewModel
+import com.example.projekakhir.ui.viewmodel.jenisterapi.DetailJenisTerapiUiState
+import com.example.projekakhir.ui.viewmodel.jenisterapi.DetailJenisTerapiViewModel
 
 object DestinasiDetailJenisTerapi : DestinasiNavigasi {
     override val route = "detail_jenis_terapi"

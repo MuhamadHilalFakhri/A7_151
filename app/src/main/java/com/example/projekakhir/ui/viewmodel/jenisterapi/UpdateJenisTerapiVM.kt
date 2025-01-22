@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui.viewmodel.sesiterapi
+package com.example.projekakhir.ui.viewmodel.jenisterapi
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.repository.JenisTerapiRepository
+import com.example.projekakhir.ui.view.jenisterapi.DestinasiUpdateJenisTerapi
 import kotlinx.coroutines.launch
 
 class UpdateJenisTerapiViewModel(

@@ -1,10 +1,11 @@
-package com.example.projekakhir.ui.viewmodel.sesiterapi
+package com.example.projekakhir.ui.viewmodel.jenisterapi
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.repository.JenisTerapiRepository
+import com.example.projekakhir.ui.view.jenisterapi.DestinasiDetailJenisTerapi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

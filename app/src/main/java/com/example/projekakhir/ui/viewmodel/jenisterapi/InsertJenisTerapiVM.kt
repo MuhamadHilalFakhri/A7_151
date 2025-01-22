@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui.viewmodel.sesiterapi
+package com.example.projekakhir.ui.viewmodel.jenisterapi
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
