@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.repository.PasienRepository
-import com.example.projekakhir.ui.view.pasien.DestinasiUpdate
+import com.example.projekakhir.ui.view.pasien.DestinasiUpdatePasien
 import kotlinx.coroutines.launch
 
 
@@ -17,7 +17,7 @@ class UpdatePasienViewModel(
     savedStateHandle: SavedStateHandle,
     private val pasienRepository: PasienRepository
 ) : ViewModel() {
-    val idPasien: Int = checkNotNull(savedStateHandle[DestinasiUpdate.idpasien])
+    val idPasien: Int = checkNotNull(savedStateHandle[DestinasiUpdatePasien.idpasien])
 
     var uiState by mutableStateOf(InsertPasienUiState())
         private set
