@@ -3,10 +3,12 @@ package com.example.projekakhir.ui.view.sesiterapi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.projekakhir.R
 import com.example.projekakhir.model.SesiTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
+import com.example.projekakhir.ui.viewmodel.sesiterapi.HomeUiState
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -40,6 +43,33 @@ object DestinasiHomeSesi : DestinasiNavigasi {
     override val titleRes = "Home Sesi Terapi"
 }
 
+@Composable
+fun HomeStatusSesiTerapi(
+    homeUiState: HomeUiState,
+    retryAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    onDeleteClick: (SesiTerapi) -> Unit = {},
+    onDetailClick: (Int) -> Unit
+) {
+    when (homeUiState) {
+        is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+
+        is HomeUiState.Success ->
+            if (homeUiState.sesiTerapi.isEmpty()) {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Tidak ada data sesi terapi")
+                }
+            } else {
+                SesiTerapiLayout(
+                    sesiTerapi = homeUiState.sesiTerapi,
+                    modifier = modifier.fillMaxWidth(),
+                    onDetailClick = { onDetailClick(it.id_sesi) },
+                    onDeleteClick = { onDeleteClick(it) }
+                )
+            }
+        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+    }
+}
 
 @Composable
 fun OnLoading(modifier: Modifier = Modifier) {
