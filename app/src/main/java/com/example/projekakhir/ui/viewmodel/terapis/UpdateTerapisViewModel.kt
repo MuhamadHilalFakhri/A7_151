@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projekakhir.model.Terapis
 import com.example.projekakhir.repository.TerapisRepository
-import com.example.projekakhir.ui.view.sesiterapi.DestinasiUpdateTerapis
+import com.example.projekakhir.ui.view.terapis.DestinasiUpdateTerapis
 import kotlinx.coroutines.launch
 
 class UpdateTerapisViewModel(

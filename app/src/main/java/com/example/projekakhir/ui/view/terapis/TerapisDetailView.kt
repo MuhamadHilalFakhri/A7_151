@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.model.Terapis
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
-import com.example.projekakhir.ui.view.sesiterapi.OnError
-import com.example.projekakhir.ui.view.sesiterapi.OnLoading
+import com.example.projekakhir.ui.view.terapis.OnError
+import com.example.projekakhir.ui.view.terapis.OnLoading
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 
 

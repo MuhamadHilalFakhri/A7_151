@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui.view.sesiterapi
+package com.example.projekakhir.ui.view.terapis
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
