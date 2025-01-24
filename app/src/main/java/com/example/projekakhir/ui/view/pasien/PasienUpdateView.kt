@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-object DestinasiUpdate : DestinasiNavigasi {
+object DestinasiUpdatePasien : DestinasiNavigasi {
     override val route = "update pasien"
     const val idpasien = "idpasien"
     val routesWithArg = "$route/{$idpasien}"
@@ -56,7 +56,7 @@ fun UpdatePasienView(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CostumeTopAppBar(
-                title = DestinasiUpdate.titleRes,
+                title = DestinasiUpdatePasien.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack
