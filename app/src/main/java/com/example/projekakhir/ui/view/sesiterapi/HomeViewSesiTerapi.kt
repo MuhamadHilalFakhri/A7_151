@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui.view.terapis
+package com.example.projekakhir.ui.view.sesiterapi
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
