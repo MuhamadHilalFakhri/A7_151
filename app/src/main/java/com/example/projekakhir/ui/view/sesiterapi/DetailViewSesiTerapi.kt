@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,8 @@ import com.example.projekakhir.ui.custom.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailSesiTerapiViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.DetailSesiUiState
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object DestinasiDetailSesi : DestinasiNavigasi {
     override val route = "detail sesi terapi"
@@ -118,6 +121,12 @@ fun BodyDetailSesiTerapi(
 fun ItemDetailSesiTerapi(
     sesiTerapi: SesiTerapi
 ) {
+    val formattedTanggalSesi = remember(sesiTerapi.tanggal_sesi) {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(sesiTerapi.tanggal_sesi)
+        parsedDate?.let { format.format(it) } ?: sesiTerapi.tanggal_sesi
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -134,7 +143,7 @@ fun ItemDetailSesiTerapi(
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailSesi(judul = "ID Jenis Terapi", isinya = sesiTerapi.id_jenis_terapi.toString())
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailSesi(judul = "Tanggal Sesi", isinya = sesiTerapi.tanggal_sesi)
+            ComponentDetailSesi(judul = "Tanggal Sesi", isinya = formattedTanggalSesi) // Display formatted date here
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailSesi(
                 judul = "Catatan Sesi",
@@ -143,6 +152,7 @@ fun ItemDetailSesiTerapi(
         }
     }
 }
+
 
 @Composable
 fun ComponentDetailSesi(
