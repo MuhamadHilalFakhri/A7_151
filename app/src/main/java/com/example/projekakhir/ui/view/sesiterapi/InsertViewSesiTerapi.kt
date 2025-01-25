@@ -1,3 +1,5 @@
+import android.app.AlertDialog
+import android.content.Context
 import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -6,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
@@ -42,7 +42,6 @@ import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiEvent
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiState
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiViewModel
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 object DestinasiInsertSesiTerapi : DestinasiNavigasi {
     override val route = "insert_sesi_terapi"
@@ -57,25 +56,23 @@ fun InsertSesiTerapiScreen(
     viewModel: InsertSesiTerapiViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val context = LocalContext.current
 
     val terapisList = viewModel.listTerapis
-    val jenisTerapiListList = viewModel.listJnsTerapi
+    val jenisTerapiList = viewModel.listJnsTerapi
     val pasienList = viewModel.listPasien
 
-
-    remember {
-        coroutineScope.launch {
-            viewModel.loadExistingData()
-        }
+    // Load data
+    coroutineScope.launch {
+        viewModel.loadExistingData()
     }
+
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             CostumeTopAppBar(
                 title = DestinasiInsertSesiTerapi.titleRes,
                 canNavigateBack = true,
-                scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack
             )
         }
@@ -84,14 +81,22 @@ fun InsertSesiTerapiScreen(
             insertUiState = viewModel.uiState,
             onValueChange = viewModel::updateInsertSesiTerapiState,
             onSaveClick = {
-                coroutineScope.launch {
-                    viewModel.loadExistingData()
-                    viewModel.insertSesiTerapi()
-                    navigateBack()
+                // Validation before saving
+                if (validateFields(viewModel.uiState.insertUiEvent)) {
+                    // Show confirmation dialog
+                    showConfirmationDialog(context, onConfirm = {
+                        coroutineScope.launch {
+                            viewModel.insertSesiTerapi()
+                            navigateBack()
+                        }
+                    })
+                } else {
+                    // Show error message if fields are empty
+                    showErrorDialog(context)
                 }
             },
             terapisList = terapisList,
-            jenisTerapiList = jenisTerapiListList,
+            jenisTerapiList = jenisTerapiList,
             pasienList = pasienList,
             modifier = Modifier
                 .padding(innerPadding)
@@ -99,6 +104,30 @@ fun InsertSesiTerapiScreen(
                 .fillMaxWidth()
         )
     }
+}
+
+fun validateFields(insertUiEvent: InsertSesiTerapiUiEvent): Boolean {
+    return insertUiEvent.idPasien != 0 &&
+            insertUiEvent.idTerapis != 0 &&
+            insertUiEvent.idJenisTerapi != 0 &&
+            insertUiEvent.tanggalSesi.isNotEmpty()
+}
+
+fun showConfirmationDialog(context: Context, onConfirm: () -> Unit) {
+    AlertDialog.Builder(context)
+        .setTitle("Konfirmasi")
+        .setMessage("Apakah data sudah benar?")
+        .setPositiveButton("Ya") { _, _ -> onConfirm() }
+        .setNegativeButton("Tidak", null)
+        .show()
+}
+
+fun showErrorDialog(context: Context) {
+    AlertDialog.Builder(context)
+        .setTitle("Peringatan")
+        .setMessage("Semua kolom harus diisi!")
+        .setPositiveButton("OK", null)
+        .show()
 }
 
 @Composable

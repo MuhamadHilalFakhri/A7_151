@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,7 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -43,6 +46,10 @@ fun EntryJenisTerapiScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    // States for validation and confirmation dialog
+    val showValidationError = rememberSaveable { mutableStateOf(false) }
+    val showConfirmationDialog = rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -58,15 +65,56 @@ fun EntryJenisTerapiScreen(
             insertUiState = viewModel.uiState,
             onJenisTerapiValueChange = viewModel::updateInsertJenisTerapiState,
             onSaveClick = {
-                coroutineScope.launch {
-                    viewModel.insertJenisTerapi()
-                    navigateBack()
+                val event = viewModel.uiState.insertUiEvent
+                if (event.namaJenisTerapi.isBlank() || event.deskripsiTerapi.isBlank()) {
+                    showValidationError.value = true
+                } else {
+                    showConfirmationDialog.value = true
                 }
             },
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
+        )
+    }
+
+    // Validation Error Dialog
+    if (showValidationError.value) {
+        AlertDialog(
+            onDismissRequest = { showValidationError.value = false },
+            title = { Text("Error") },
+            text = { Text("Semua kolom harus diisi.") },
+            confirmButton = {
+                Button(onClick = { showValidationError.value = false }) {
+                    Text("OK")
+                }
+            }
+        )
+    }
+
+    // Confirmation Dialog
+    if (showConfirmationDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog.value = false },
+            title = { Text("Konfirmasi") },
+            text = { Text("Apakah data sudah benar?") },
+            confirmButton = {
+                Button(onClick = {
+                    showConfirmationDialog.value = false
+                    coroutineScope.launch {
+                        viewModel.insertJenisTerapi()
+                        navigateBack()
+                    }
+                }) {
+                    Text("Ya")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showConfirmationDialog.value = false }) {
+                    Text("Tidak")
+                }
+            }
         )
     }
 }

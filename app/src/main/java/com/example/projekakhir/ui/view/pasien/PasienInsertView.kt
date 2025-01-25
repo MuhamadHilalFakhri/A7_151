@@ -8,17 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -33,11 +24,10 @@ import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-object DestinasiEntryPasien: DestinasiNavigasi {
+object DestinasiEntryPasien : DestinasiNavigasi {
     override val route = "insert pasien"
     override val titleRes = "Insert Pasien"
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,8 +66,6 @@ fun EntryPasienScreen(
     }
 }
 
-
-
 @Composable
 fun EntryBodyPasien(
     insertUiState: InsertPasienUiState,
@@ -85,6 +73,9 @@ fun EntryBodyPasien(
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showValidationDialog by remember { mutableStateOf(false) }
+    var isFormValid by remember { mutableStateOf(true) }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = modifier.padding(12.dp)
@@ -92,36 +83,65 @@ fun EntryBodyPasien(
         FormInputPasien(
             insertUiEvent = insertUiState.insertUiEvent,
             onValueChange = onPasienValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onValidationChange = { isValid -> isFormValid = isValid }
         )
 
         Button(
-            onClick = onSaveClick,
+            onClick = {
+                if (isFormValid) {
+                    showValidationDialog = true
+                }
+            },
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isFormValid
         ) {
             Text(text = "Simpan")
         }
+
+        if (showValidationDialog) {
+            AlertDialog(
+                onDismissRequest = { showValidationDialog = false },
+                title = { Text("Konfirmasi") },
+                text = { Text("Apakah data sudah benar?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showValidationDialog = false
+                            onSaveClick()
+                        }
+                    ) {
+                        Text("Ya")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showValidationDialog = false }) {
+                        Text("Tidak")
+                    }
+                }
+            )
+        }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormInputPasien(
     insertUiEvent: InsertPasienUiEvent,
     modifier: Modifier = Modifier,
     onValueChange: (InsertPasienUiEvent) -> Unit = {},
-    enabled: Boolean = true
+    onValidationChange: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
+    val calendar = Calendar.getInstance()
 
     // DatePickerDialog initialization
-    val calendar = Calendar.getInstance()
     val datePickerDialog = remember {
         DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
                 val formattedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-                // Update only the tanggalLahir field, keeping other fields the same
                 onValueChange(insertUiEvent.copy(tanggalLahir = formattedDate))
             },
             calendar.get(Calendar.YEAR),
@@ -130,70 +150,84 @@ fun FormInputPasien(
         )
     }
 
+    var isNamaPasienValid by remember { mutableStateOf(true) }
+    var isAlamatValid by remember { mutableStateOf(true) }
+    var isNomorTeleponValid by remember { mutableStateOf(true) }
+    var isTanggalLahirValid by remember { mutableStateOf(true) }
+    var isRiwayatMedikalValid by remember { mutableStateOf(true) } // Validation for riwayatMedikal
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Each field should only update its specific value
         OutlinedTextField(
             value = insertUiEvent.namaPasien,
-            onValueChange = { onValueChange(insertUiEvent.copy(namaPasien = it)) },
+            onValueChange = {
+                isNamaPasienValid = it.isNotBlank()
+                onValueChange(insertUiEvent.copy(namaPasien = it))
+            },
             label = { Text("Nama Pasien") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
+            isError = !isNamaPasienValid,
             singleLine = true
         )
 
         OutlinedTextField(
             value = insertUiEvent.alamat,
-            onValueChange = { onValueChange(insertUiEvent.copy(alamat = it)) },
+            onValueChange = {
+                isAlamatValid = it.isNotBlank()
+                onValueChange(insertUiEvent.copy(alamat = it))
+            },
             label = { Text("Alamat") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
+            isError = !isAlamatValid,
             singleLine = true
         )
 
         OutlinedTextField(
             value = insertUiEvent.nomorTelepon,
-            onValueChange = { onValueChange(insertUiEvent.copy(nomorTelepon = it)) },
+            onValueChange = {
+                isNomorTeleponValid = it.isNotBlank()
+                onValueChange(insertUiEvent.copy(nomorTelepon = it))
+            },
             label = { Text("Nomor Telepon") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
+            isError = !isNomorTeleponValid,
             singleLine = true
         )
 
         OutlinedTextField(
             value = insertUiEvent.tanggalLahir,
-            onValueChange = { /* Disable direct input */ },
+            onValueChange = {},
             label = { Text("Tanggal Lahir") },
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { datePickerDialog.show() },
-            enabled = false,
-            singleLine = true
+            isError = !isTanggalLahirValid,
+            singleLine = true,
+            enabled = false
         )
-
 
         OutlinedTextField(
             value = insertUiEvent.riwayatMedikal,
-            onValueChange = { onValueChange(insertUiEvent.copy(riwayatMedikal = it)) },
+            onValueChange = {
+                isRiwayatMedikalValid = it.isNotBlank() // Validation for riwayatMedikal
+                onValueChange(insertUiEvent.copy(riwayatMedikal = it))
+            },
             label = { Text("Riwayat Medikal") },
             modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
+            isError = !isRiwayatMedikalValid, // Show error state if invalid
             singleLine = true
         )
 
-        if (enabled) {
-            Text(
-                text = "Isi Semua Data!",
-                modifier = Modifier.padding(12.dp)
-            )
-        }
-
-        Divider(
-            thickness = 8.dp,
-            modifier = Modifier.padding(12.dp)
+        // Call validation callback after all fields are checked
+        onValidationChange(
+            isNamaPasienValid &&
+                    isAlamatValid &&
+                    isNomorTeleponValid &&
+                    isTanggalLahirValid &&
+                    isRiwayatMedikalValid && // Include validation for riwayatMedikal
+                    insertUiEvent.tanggalLahir.isNotBlank()
         )
     }
 }
