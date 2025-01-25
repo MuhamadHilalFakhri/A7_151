@@ -74,39 +74,56 @@ fun DetailPasienView(
     ) { innerPadding ->
         val detailUiState by viewModel.detailUiState.collectAsState()
 
-        when (val state = detailUiState) {
-            is DetailUiState.Loading -> {
-                OnLoading(modifier = Modifier.fillMaxSize())
+        BodyDetailPasien(
+            modifier = Modifier.padding(innerPadding),
+            detailUiState = detailUiState,
+            retryAction = { viewModel.getDetailPasien() }
+        )
+    }
+}
+
+@Composable
+fun BodyDetailPasien(
+    modifier: Modifier = Modifier,
+    detailUiState: DetailUiState,
+    retryAction: () -> Unit = {}
+) {
+    when (detailUiState) {
+        is DetailUiState.Loading -> {
+            OnLoading(modifier = modifier.fillMaxSize())
+        }
+
+        is DetailUiState.Success -> {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                ItemDetailPasien(pasien = detailUiState.pasien)
             }
-            is DetailUiState.Success -> {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
-                    ItemDetailPasien(pasien = state.pasien)
-                }
-            }
-            is DetailUiState.Error -> {
-                OnError(
-                    retryAction = { viewModel.getDetailPasien() },
-                    modifier = modifier.fillMaxSize()
-                )
-            }
-            else -> {
-                Text("Unexpected state")
-            }
+        }
+
+        is DetailUiState.Error -> {
+            OnError(
+                retryAction = retryAction,
+                modifier = modifier.fillMaxSize()
+            )
+        }
+
+        else -> {
+            Text("Unexpected")
         }
     }
 }
 
-
 @Composable
-fun ItemDetailPasien(pasien: Pasien) {
+fun ItemDetailPasien(
+    pasien: Pasien
+) {
     val formattedTanggalLahir = remember(pasien.tanggal_lahir) {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(pasien.tanggal_lahir)
-        parsedDate?.let { format.format(it) } ?: pasien.tanggal_lahir // Handle null case
+        parsedDate?.let { format.format(it) } ?: pasien.tanggal_lahir
     }
 
     Card(
@@ -133,7 +150,10 @@ fun ItemDetailPasien(pasien: Pasien) {
 }
 
 @Composable
-fun ComponentDetailPasien(judul: String, isinya: String) {
+fun ComponentDetailPasien(
+    judul: String,
+    isinya: String
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
