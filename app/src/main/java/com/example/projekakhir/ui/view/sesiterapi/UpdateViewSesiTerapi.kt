@@ -30,10 +30,10 @@ import com.example.projekakhir.ui.viewmodel.sesiterapi.UpdateSesiTerapiViewModel
 import kotlinx.coroutines.launch
 
 object DestinasiUpdateSesiTerapi : DestinasiNavigasi {
-    override val route = "update pasien"
-    const val idsesi = "idpasien"
+    override val route = "update sesi"
+    const val idsesi = "idsesi"
     val routeWithArg = "$route/{$idsesi}"
-    override val titleRes = "Update Pasien"
+    override val titleRes = "Update Sesi"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
