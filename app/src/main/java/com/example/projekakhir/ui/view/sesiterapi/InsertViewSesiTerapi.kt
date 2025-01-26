@@ -47,6 +47,9 @@ import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiEvent
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiState
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiViewModel
+import com.example.projekakhir.ui.viewmodel.sesiterapi.showConfirmationDialog
+import com.example.projekakhir.ui.viewmodel.sesiterapi.showErrorDialog
+import com.example.projekakhir.ui.viewmodel.sesiterapi.validateFields
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -117,30 +120,6 @@ fun InsertSesiTerapiScreen(
 }
 
 
-
-fun validateFields(insertUiEvent: InsertSesiTerapiUiEvent): Boolean {
-    return insertUiEvent.idPasien != 0 &&
-            insertUiEvent.idTerapis != 0 &&
-            insertUiEvent.idJenisTerapi != 0 &&
-            insertUiEvent.tanggalSesi.isNotEmpty()
-}
-
-fun showConfirmationDialog(context: Context, onConfirm: () -> Unit) {
-    AlertDialog.Builder(context)
-        .setTitle("Konfirmasi")
-        .setMessage("Apakah data sudah benar?")
-        .setPositiveButton("Ya") { _, _ -> onConfirm() }
-        .setNegativeButton("Tidak", null)
-        .show()
-}
-
-fun showErrorDialog(context: Context) {
-    AlertDialog.Builder(context)
-        .setTitle("Peringatan")
-        .setMessage("Semua kolom harus diisi!")
-        .setPositiveButton("OK", null)
-        .show()
-}
 
 @Composable
 fun InsertSesiTerapiBody(
