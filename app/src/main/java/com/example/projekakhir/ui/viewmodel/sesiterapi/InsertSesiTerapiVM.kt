@@ -1,5 +1,7 @@
 package com.example.projekakhir.ui.viewmodel.sesiterapi
 
+import android.app.AlertDialog
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -96,3 +98,26 @@ fun InsertSesiTerapiUiEvent.toSesiTerapi(): SesiTerapi = SesiTerapi(
     tanggal_sesi = tanggalSesi,
     catatan_sesi = catatanSesi
 )
+fun validateFields(insertUiEvent: InsertSesiTerapiUiEvent): Boolean {
+    return insertUiEvent.idPasien != 0 &&
+            insertUiEvent.idTerapis != 0 &&
+            insertUiEvent.idJenisTerapi != 0 &&
+            insertUiEvent.tanggalSesi.isNotEmpty()
+}
+
+fun showConfirmationDialog(context: Context, onConfirm: () -> Unit) {
+    AlertDialog.Builder(context)
+        .setTitle("Konfirmasi")
+        .setMessage("Apakah data sudah benar?")
+        .setPositiveButton("Ya") { _, _ -> onConfirm() }
+        .setNegativeButton("Tidak", null)
+        .show()
+}
+
+fun showErrorDialog(context: Context) {
+    AlertDialog.Builder(context)
+        .setTitle("Peringatan")
+        .setMessage("Semua kolom harus diisi!")
+        .setPositiveButton("OK", null)
+        .show()
+}
