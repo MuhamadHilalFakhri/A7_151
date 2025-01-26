@@ -45,7 +45,8 @@ fun UpdateJenisTerapiView(
                 title = DestinasiUpdateJenisTerapi.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                showRefreshIcon = false
             )
         }
     ) { padding ->

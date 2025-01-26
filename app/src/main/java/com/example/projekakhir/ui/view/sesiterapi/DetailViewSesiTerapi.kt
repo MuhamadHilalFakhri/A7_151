@@ -64,11 +64,13 @@ fun DetailSesiTerapiView(
             FloatingActionButton(
                 onClick = { onEditClick(idSesi) }, // Navigate to the edit screen
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                containerColor = Color(0xFF4A90E2) // Blue color
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Sesi Terapi"
+                    contentDescription = "Edit Sesi Terapi",
+                    tint = Color.White // Ensure the icon color contrasts with the button color
                 )
             }
         }
@@ -130,8 +132,8 @@ fun ItemDetailSesiTerapi(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = Color(0xFF003f5c), // Blue color for consistency
+            contentColor = Color.White
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -152,7 +154,6 @@ fun ItemDetailSesiTerapi(
         }
     }
 }
-
 
 @Composable
 fun ComponentDetailSesi(

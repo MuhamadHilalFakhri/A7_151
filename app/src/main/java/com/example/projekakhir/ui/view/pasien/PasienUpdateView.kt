@@ -45,10 +45,13 @@ fun UpdatePasienView(
     val formattedTanggalLahir = remember(uiState.insertUiEvent?.tanggalLahir) {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         try {
-            val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(uiState.insertUiEvent?.tanggalLahir ?: "")
-            parsedDate?.let { format.format(it) } ?: uiState.insertUiEvent?.tanggalLahir // Handling null or invalid date
+            // Pastikan tanggal lahir yang diterima tidak kosong dan valid
+            val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                .parse(uiState.insertUiEvent?.tanggalLahir ?: "")
+            parsedDate?.let { format.format(it) } ?: uiState.insertUiEvent?.tanggalLahir
         } catch (e: Exception) {
-            uiState.insertUiEvent?.tanggalLahir ?: "" // If parsing fails, keep the original or empty string
+            // Tangani tanggal yang tidak valid, kembalikan string kosong atau nilai default
+            uiState.insertUiEvent?.tanggalLahir ?: ""
         }
     }
 
@@ -59,7 +62,8 @@ fun UpdatePasienView(
                 title = DestinasiUpdatePasien.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                showRefreshIcon = false
             )
         }
     ) { padding ->
@@ -84,7 +88,7 @@ fun UpdatePasienView(
                                 idPasien = viewModel.idPasien,
                                 pasien = insertUiEvent.toPasien()
                             )
-                            navigateBack() // Navigate back after saving
+                            navigateBack()
                         }
                     }
                 }
@@ -92,3 +96,4 @@ fun UpdatePasienView(
         }
     }
 }
+

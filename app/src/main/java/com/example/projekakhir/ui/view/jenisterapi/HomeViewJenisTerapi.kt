@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,8 +30,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,6 +63,9 @@ fun HomeScreenJenisTerapi(
     viewModel: HomeViewModelJenisTerapi = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val (showDeleteDialog, setShowDeleteDialog) = remember { mutableStateOf(false) }
+    val itemToDelete = remember { mutableStateOf<JenisTerapi?>(null) }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -74,9 +82,11 @@ fun HomeScreenJenisTerapi(
             FloatingActionButton(
                 onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
+                modifier = Modifier.padding(18.dp),
+                containerColor = Color(0xFF4A90E2)
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Jenis Terapi")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Jenis Terapi",
+                    tint = Color.White)
             }
         },
     ) { innerPadding ->
@@ -85,9 +95,40 @@ fun HomeScreenJenisTerapi(
             retryAction = { viewModel.getJenisTerapi() },
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
-            onDeleteClick = {
-                viewModel.deleteJenisTerapi(it.id_jenis_terapi)
-                viewModel.getJenisTerapi()
+            onDeleteClick = { jenisTerapi ->
+                itemToDelete.value = jenisTerapi
+                setShowDeleteDialog(true)
+            }
+        )
+    }
+
+    // Confirmation dialog for deletion
+    if (showDeleteDialog && itemToDelete.value != null) {
+        AlertDialog(
+            onDismissRequest = { setShowDeleteDialog(false) },
+            title = {
+                Text(text = "Konfirmasi Hapus")
+            },
+            text = {
+                Text("Apakah Anda yakin ingin menghapus jenis terapi '${itemToDelete.value?.nama_jenis_terapi}'?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        itemToDelete.value?.let { terapi ->
+                            viewModel.deleteJenisTerapi(terapi.id_jenis_terapi)
+                            viewModel.getJenisTerapi()
+                        }
+                        setShowDeleteDialog(false)
+                    }
+                ) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { setShowDeleteDialog(false) }) {
+                    Text("Batal")
+                }
             }
         )
     }
@@ -120,6 +161,7 @@ fun HomeStatusJenisTerapi(
         is HomeUiStateJenisTerapi.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
     }
 }
+
 @Composable
 fun OnLoading(modifier: Modifier = Modifier){
     Image(
@@ -146,6 +188,7 @@ fun OnError(retryAction:()->Unit, modifier: Modifier = Modifier){
         }
     }
 }
+
 @Composable
 fun JenisTerapiLayout(
     jenisTerapi: List<JenisTerapi>,
@@ -179,7 +222,11 @@ fun JenisTerapiCard(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF003f5c), // Dark blue color
+            contentColor = Color.White // White text color
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -191,20 +238,23 @@ fun JenisTerapiCard(
             ) {
                 Text(
                     text = jenisTerapi.nama_jenis_terapi,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White // White text color
                 )
                 Spacer(Modifier.weight(1f))
                 IconButton(onClick = { onDeleteClick(jenisTerapi) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = null,
+                        tint = Color.White // White delete icon color
                     )
                 }
             }
 
             Text(
                 text = "Deskripsi: ${jenisTerapi.deskripsi_terapi}",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White // White text color for description
             )
         }
     }

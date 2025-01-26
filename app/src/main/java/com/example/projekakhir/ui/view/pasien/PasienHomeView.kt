@@ -1,5 +1,6 @@
 package com.example.projekakhir.ui.view.pasien
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,12 +31,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.R
@@ -62,6 +69,7 @@ fun HomeScreenPasien(
     viewModel: HomeViewModelPasien = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -78,9 +86,14 @@ fun HomeScreenPasien(
             FloatingActionButton(
                 onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
+                modifier = Modifier.padding(18.dp),
+                containerColor = Color(0xFF4A90E2) // Warna biru terang untuk container
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Pasien")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Pasien",
+                    tint = Color.White // Warna putih untuk ikon agar kontras
+                )
             }
         },
     ) { innerPadding ->
@@ -176,12 +189,18 @@ fun PasienLayout(
             )
         }
     }
-}@Composable
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun PasienCard(
     pasien: Pasien,
     modifier: Modifier = Modifier,
     onDeleteClick: (Pasien) -> Unit = {}
 ) {
+    // State to track whether the dialog is visible
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
     // Format tanggal menggunakan SimpleDateFormat
     val formattedTanggalLahir = remember(pasien.tanggal_lahir) {
         try {
@@ -199,10 +218,13 @@ fun PasienCard(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF003f5c))
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
@@ -211,29 +233,54 @@ fun PasienCard(
             ) {
                 Text(
                     text = pasien.nama_pasien,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(Modifier.weight(1f))
-                IconButton(onClick = { onDeleteClick(pasien) }) {
+                IconButton(onClick = { showConfirmationDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = null,
+                        tint = Color.White
                     )
                 }
             }
 
             Text(
                 text = "Alamat: ${pasien.alamat}",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
             )
             Text(
                 text = "Nomor Telepon: ${pasien.nomor_telepon}",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
             )
             Text(
                 text = "Tanggal Lahir: $formattedTanggalLahir",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
             )
         }
+    }
+
+    // Show confirmation dialog
+    if (showConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog = false },
+            title = { Text(text = "Konfirmasi") },
+            text = { Text(text = "Apakah Anda yakin ingin menghapus data ini?") },
+            confirmButton = {
+                Button(onClick = {
+                    showConfirmationDialog = false
+                    onDeleteClick(pasien)
+                }) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showConfirmationDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
     }
 }

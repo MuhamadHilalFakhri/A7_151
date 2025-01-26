@@ -2,39 +2,21 @@ package com.example.projekakhir.ui.view.sesiterapi
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.R
@@ -45,8 +27,7 @@ import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.HomeUiState
 import com.example.projekakhir.ui.viewmodel.sesiterapi.HomeViewModelSesiTerapi
 import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 object DestinasiHomeSesiTerapi : DestinasiNavigasi {
     override val route = "home sesi terapi"
@@ -62,6 +43,9 @@ fun HomeSesiTerapi(
     viewModel: HomeViewModelSesiTerapi = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val (showDeleteDialog, setShowDeleteDialog) = remember { mutableStateOf(false) }
+    val itemToDelete = remember { mutableStateOf<SesiTerapi?>(null) }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -78,9 +62,11 @@ fun HomeSesiTerapi(
             FloatingActionButton(
                 onClick = navigateToItemEntry,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
+                modifier = Modifier.padding(18.dp),
+                containerColor = Color(0xFF4A90E2)
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Sesi Terapi")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Sesi Terapi",
+                    tint = Color.White)
             }
         },
     ) { innerPadding ->
@@ -89,14 +75,44 @@ fun HomeSesiTerapi(
             retryAction = { viewModel.getSesiTerapi() },
             modifier = Modifier.padding(innerPadding),
             onDetailClick = onDetailClick,
-            onDeleteClick = {
-                viewModel.deleteSesiTerapi(it.id_sesi)
-                viewModel.getSesiTerapi()
+            onDeleteClick = { sesiTerapi ->
+                itemToDelete.value = sesiTerapi
+                setShowDeleteDialog(true)
+            }
+        )
+    }
+
+    // Confirmation dialog for deletion
+    if (showDeleteDialog && itemToDelete.value != null) {
+        AlertDialog(
+            onDismissRequest = { setShowDeleteDialog(false) },
+            title = {
+                Text(text = "Konfirmasi Hapus")
+            },
+            text = {
+                Text("Apakah Anda yakin ingin menghapus sesi terapi ID: ${itemToDelete.value?.id_sesi}?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        itemToDelete.value?.let { sesi ->
+                            viewModel.deleteSesiTerapi(sesi.id_sesi)
+                            viewModel.getSesiTerapi()
+                        }
+                        setShowDeleteDialog(false)
+                    }
+                ) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { setShowDeleteDialog(false) }) {
+                    Text("Batal")
+                }
             }
         )
     }
 }
-
 
 @Composable
 fun HomeStatusSesiTerapi(
@@ -177,13 +193,14 @@ fun SesiTerapiLayout(
     }
 }
 
-
 @Composable
 fun SesiTerapiCard(
     sesiTerapi: SesiTerapi,
     modifier: Modifier = Modifier,
     onDeleteClick: (SesiTerapi) -> Unit = {}
 ) {
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
     // Format tanggal sesi
     val formattedTanggalSesi = remember(sesiTerapi.tanggal_sesi) {
         try {
@@ -201,10 +218,13 @@ fun SesiTerapiCard(
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF003f5c)) // Dark background color
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
@@ -213,26 +233,50 @@ fun SesiTerapiCard(
             ) {
                 Text(
                     text = "Sesi Terapi ID: ${sesiTerapi.id_sesi}",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White), // White text for visibility
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(Modifier.weight(1f))
-                IconButton(onClick = { onDeleteClick(sesiTerapi) }) {
+                IconButton(onClick = { showConfirmationDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = null,
+                        tint = Color.White // White icon tint
                     )
                 }
             }
 
             Text(
                 text = "Tanggal Sesi: $formattedTanggalSesi",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White) // White text for details
             )
             Text(
                 text = "Catatan: ${sesiTerapi.catatan_sesi ?: "Tidak ada catatan"}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
             )
         }
     }
-}
 
+    // Show confirmation dialog
+    if (showConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog = false },
+            title = { Text(text = "Konfirmasi") },
+            text = { Text(text = "Apakah Anda yakin ingin menghapus sesi terapi ID: ${sesiTerapi.id_sesi}?") },
+            confirmButton = {
+                Button(onClick = {
+                    showConfirmationDialog = false
+                    onDeleteClick(sesiTerapi)
+                }) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showConfirmationDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
+    }
+}

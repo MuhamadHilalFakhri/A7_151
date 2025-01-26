@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.navigation.DestinasiNavigasi
+import com.example.projekakhir.ui.custom.CostumeBottomAppBar
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.DetailPasienViewModel
@@ -47,8 +48,9 @@ fun DetailPasienView(
     idPasien: Int,
     modifier: Modifier = Modifier,
     viewModel: DetailPasienViewModel = viewModel(factory = PenyediaViewModel.Factory),
-    onEditClick: (Int) -> Unit = {}, // Callback untuk tombol edit
-    navigateBack: () -> Unit
+    onEditClick: (Int) -> Unit = {},
+    navigateBack: () -> Unit,
+    navigateToTerapis: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -59,15 +61,22 @@ fun DetailPasienView(
                 onRefresh = { viewModel.getDetailPasien() }
             )
         },
+//        bottomBar = {
+//            CostumeBottomAppBar(
+//                onTerapisClick = navigateToTerapis
+//            )
+//        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onEditClick(idPasien) }, // Navigasi ke halaman edit
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                containerColor = Color(0xFF4A90E2) // Warna biru terang untuk container
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Pasien"
+                    contentDescription = "Edit Pasien",
+                    tint = Color.White // Warna putih untuk ikon agar kontras dengan container biru
                 )
             }
         }
@@ -127,10 +136,12 @@ fun ItemDetailPasien(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = Color(0xFF003f5c), // Warna biru tua
+            contentColor = Color.White // Konten berwarna putih
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -160,15 +171,16 @@ fun ComponentDetailPasien(
     ) {
         Text(
             text = "$judul :",
-            fontSize = 20.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray
+            color = Color(0xFFB0BEC5) // Warna abu-abu terang untuk judul
         )
 
         Text(
             text = isinya,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.White // Konten berwarna putih
         )
     }
 }

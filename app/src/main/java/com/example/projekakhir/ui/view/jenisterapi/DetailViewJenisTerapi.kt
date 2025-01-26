@@ -63,11 +63,13 @@ fun DetailJenisTerapiView(
                     onEditClick(idJenisTerapi) // Menggunakan idJenisTerapi untuk navigasi ke update
                 },
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                containerColor = Color(0xFF4A90E2)
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Jenis Terapi"
+                    contentDescription = "Edit Jenis Terapi",
+                    tint = Color.White
                 )
             }
         }
@@ -123,8 +125,8 @@ fun ItemDetailJenisTerapi(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = Color(0xFF003f5c), // Dark blue color
+            contentColor = Color.White // White text color
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -150,13 +152,15 @@ fun ComponentDetailJenisTerapi(
             text = "$judul :",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray
+            color = Color.White // White color for title
         )
 
         Text(
             text = isinya,
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.White // White text color
         )
     }
 }
+

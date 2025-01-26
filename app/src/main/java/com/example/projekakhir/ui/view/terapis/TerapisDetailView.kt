@@ -36,7 +36,8 @@ object DestinasiDetailTerapis : DestinasiNavigasi {
     const val ID_TERAPIS = "id_terapis"
     val routeWithArg = "$route/{$ID_TERAPIS}"
     override val titleRes = "Detail Terapis"
-}@OptIn(ExperimentalMaterial3Api::class)
+}
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailTerapisView(
     idTerapis: Int,
@@ -56,15 +57,15 @@ fun DetailTerapisView(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    onEditClick(idTerapis) // Menggunakan idTerapis untuk navigasi ke update
-                },
+                onClick = { onEditClick(idTerapis) },
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                containerColor = Color(0xFF4A90E2) // Blue color
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Terapis"
+                    contentDescription = "Edit Terapis",
+                    tint = Color.White // Ensure the icon color contrasts with the button color
                 )
             }
         }
@@ -117,11 +118,12 @@ fun BodyDetailTerapis(
 fun ItemDetailTerapis(
     terapis: Terapis
 ) {
+    // In DetailTerapisView
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = Color(0xFF003f5c), // Match the blue color for consistency
+            contentColor = Color.White
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -134,6 +136,7 @@ fun ItemDetailTerapis(
             ComponentDetailTerapis(judul = "Nomor Izin Praktik", isinya = terapis.nomor_izin_praktik)
         }
     }
+
 }
 
 @Composable

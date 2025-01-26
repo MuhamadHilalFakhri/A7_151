@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -22,7 +25,9 @@ import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienUiEvent
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienUiState
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 object DestinasiEntryPasien : DestinasiNavigasi {
     override val route = "insert pasien"
@@ -38,6 +43,7 @@ fun EntryPasienScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -45,7 +51,8 @@ fun EntryPasienScreen(
                 title = DestinasiEntryPasien.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                showRefreshIcon = false
             )
         }
     ) { innerPadding ->
@@ -65,6 +72,8 @@ fun EntryPasienScreen(
         )
     }
 }
+
+
 
 @Composable
 fun EntryBodyPasien(
@@ -95,10 +104,15 @@ fun EntryBodyPasien(
             },
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth(),
-            enabled = isFormValid
+            enabled = isFormValid,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4A90E2), // Warna biru terang untuk background button
+                contentColor = Color.White // Warna putih untuk teks
+            )
         ) {
             Text(text = "Simpan")
         }
+
 
         if (showValidationDialog) {
             AlertDialog(
@@ -133,28 +147,20 @@ fun FormInputPasien(
     onValueChange: (InsertPasienUiEvent) -> Unit = {},
     onValidationChange: (Boolean) -> Unit
 ) {
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-
-    // DatePickerDialog initialization
-    val datePickerDialog = remember {
-        DatePickerDialog(
-            context,
-            { _, year, month, dayOfMonth ->
-                val formattedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-                onValueChange(insertUiEvent.copy(tanggalLahir = formattedDate))
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-    }
 
     var isNamaPasienValid by remember { mutableStateOf(true) }
     var isAlamatValid by remember { mutableStateOf(true) }
     var isNomorTeleponValid by remember { mutableStateOf(true) }
     var isTanggalLahirValid by remember { mutableStateOf(true) }
-    var isRiwayatMedikalValid by remember { mutableStateOf(true) } // Validation for riwayatMedikal
+    var isRiwayatMedikalValid by remember { mutableStateOf(true) }
+
+    val context = LocalContext.current
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Date format
+    val calendar = Calendar.getInstance()
+
+    // State to hold the selected date
+    var showDatePickerDialog by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf(insertUiEvent.tanggalLahir) }
 
     Column(
         modifier = modifier,
@@ -196,27 +202,51 @@ fun FormInputPasien(
             singleLine = true
         )
 
+        // Date Picker for Tanggal Lahir
         OutlinedTextField(
-            value = insertUiEvent.tanggalLahir,
-            onValueChange = {},
+            value = selectedDate,
+            onValueChange = { }, // No need to change text directly
             label = { Text("Tanggal Lahir") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { datePickerDialog.show() },
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = true, // Make the text field read-only
             isError = !isTanggalLahirValid,
-            singleLine = true,
-            enabled = false
+            trailingIcon = {
+                IconButton(onClick = { showDatePickerDialog = true }) {
+                    Icon(imageVector = Icons.Default.DateRange, contentDescription = "Pick Date")
+                }
+            }
         )
+
+        // Show DatePicker Dialog
+        if (showDatePickerDialog) {
+            val datePickerDialog = DatePickerDialog(
+                context,
+                { _, year, month, dayOfMonth ->
+                    // Update the selected date after user selects a date
+                    val selectedCalendar = Calendar.getInstance().apply {
+                        set(year, month, dayOfMonth)
+                    }
+                    val formattedDate = dateFormatter.format(selectedCalendar.time)
+                    onValueChange(insertUiEvent.copy(tanggalLahir = formattedDate))
+                    selectedDate = formattedDate
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+            showDatePickerDialog = false // Close dialog after showing
+        }
 
         OutlinedTextField(
             value = insertUiEvent.riwayatMedikal,
             onValueChange = {
-                isRiwayatMedikalValid = it.isNotBlank() // Validation for riwayatMedikal
+                isRiwayatMedikalValid = it.isNotBlank()
                 onValueChange(insertUiEvent.copy(riwayatMedikal = it))
             },
             label = { Text("Riwayat Medikal") },
             modifier = Modifier.fillMaxWidth(),
-            isError = !isRiwayatMedikalValid, // Show error state if invalid
+            isError = !isRiwayatMedikalValid,
             singleLine = true
         )
 
@@ -226,8 +256,10 @@ fun FormInputPasien(
                     isAlamatValid &&
                     isNomorTeleponValid &&
                     isTanggalLahirValid &&
-                    isRiwayatMedikalValid && // Include validation for riwayatMedikal
+                    isRiwayatMedikalValid &&
                     insertUiEvent.tanggalLahir.isNotBlank()
         )
     }
 }
+
+

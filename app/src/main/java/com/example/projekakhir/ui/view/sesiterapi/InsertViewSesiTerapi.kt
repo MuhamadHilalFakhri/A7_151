@@ -8,25 +8,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -42,6 +48,9 @@ import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiEvent
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiState
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 object DestinasiInsertSesiTerapi : DestinasiNavigasi {
     override val route = "insert_sesi_terapi"
@@ -62,8 +71,8 @@ fun InsertSesiTerapiScreen(
     val jenisTerapiList = viewModel.listJnsTerapi
     val pasienList = viewModel.listPasien
 
-    // Load data
-    coroutineScope.launch {
+    // Use LaunchedEffect to load data only when the composable is first composed
+    LaunchedEffect(Unit) {
         viewModel.loadExistingData()
     }
 
@@ -73,7 +82,8 @@ fun InsertSesiTerapiScreen(
             CostumeTopAppBar(
                 title = DestinasiInsertSesiTerapi.titleRes,
                 canNavigateBack = true,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                showRefreshIcon = false
             )
         }
     ) { innerPadding ->
@@ -105,6 +115,8 @@ fun InsertSesiTerapiScreen(
         )
     }
 }
+
+
 
 fun validateFields(insertUiEvent: InsertSesiTerapiUiEvent): Boolean {
     return insertUiEvent.idPasien != 0 &&
@@ -158,7 +170,11 @@ fun InsertSesiTerapiBody(
         Button(
             onClick = onSaveClick,
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF4A90E2), // Warna biru terang untuk background button
+                contentColor = Color.White // Warna putih untuk teks
+            )
         ) {
             Text(text = "Simpan")
         }
@@ -175,6 +191,14 @@ fun FormInputSesiTerapi(
     pasienList: List<Pasien>,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Date format
+    val calendar = Calendar.getInstance()
+
+    // State to hold the selected date
+    var showDatePickerDialog by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf(insertUiEvent.tanggalSesi) }
+
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
         // Dropdown Pasien
@@ -216,13 +240,40 @@ fun FormInputSesiTerapi(
             }
         )
 
-        // Input Tanggal Sesi
+        // Date Picker Button
         OutlinedTextField(
-            value = insertUiEvent.tanggalSesi,
-            onValueChange = { onValueChange(insertUiEvent.copy(tanggalSesi = it)) },
+            value = selectedDate,
+            onValueChange = { }, // No need to change text directly
             label = { Text("Tanggal Sesi") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = true, // Make the text field read-only
+            trailingIcon = {
+                IconButton(onClick = { showDatePickerDialog = true }) {
+                    Icon(imageVector = Icons.Default.DateRange, contentDescription = "Pick Date")
+                }
+            }
         )
+
+        // Show DatePicker Dialog
+        if (showDatePickerDialog) {
+            val datePickerDialog = DatePickerDialog(
+                context,
+                { _, year, month, dayOfMonth ->
+                    // Update the selected date after user selects a date
+                    val selectedCalendar = Calendar.getInstance().apply {
+                        set(year, month, dayOfMonth)
+                    }
+                    val formattedDate = dateFormatter.format(selectedCalendar.time)
+                    onValueChange(insertUiEvent.copy(tanggalSesi = formattedDate))
+                    selectedDate = formattedDate
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+            showDatePickerDialog = false // Close dialog after showing
+        }
 
         // Input Catatan Sesi
         OutlinedTextField(

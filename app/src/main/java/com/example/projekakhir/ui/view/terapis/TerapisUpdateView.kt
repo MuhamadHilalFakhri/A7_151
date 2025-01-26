@@ -45,7 +45,8 @@ fun UpdateTerapisView(
                 title = DestinasiUpdateTerapis.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = navigateBack,
+                showRefreshIcon = false
             )
         }
     ) { padding ->
