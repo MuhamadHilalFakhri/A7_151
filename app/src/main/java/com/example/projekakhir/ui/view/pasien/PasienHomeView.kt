@@ -31,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.projekakhir.R
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.navigation.DestinasiNavigasi
@@ -52,6 +54,8 @@ import com.example.projekakhir.ui.customwidget.HamburgerMenu
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
 import com.example.projekakhir.ui.viewmodel.pasien.HomeViewModelPasien
+import kotlinx.coroutines.delay // Import from kotlinx.coroutines
+import kotlin.time.Duration.Companion.milliseconds // Use Kotlin's Duration
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -114,7 +118,6 @@ fun HomeScreenPasien(
     }
 }
 
-
 @Composable
 fun HomeStatus(
     homeUiState: HomeUiState,
@@ -144,13 +147,21 @@ fun HomeStatus(
 }
 
 @Composable
-fun OnLoading(modifier: Modifier = Modifier){
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.loading_img),
-        contentDescription = stringResource(R.string.loading)
+fun OnLoading(modifier: Modifier = Modifier) {
+    LaunchedEffect(Unit) {
+        delay(2000.milliseconds) // 2 seconds delay using Kotlin's Duration
+    }
+
+    AsyncImage(
+        model = R.drawable.loading,
+        contentDescription = stringResource(R.string.loading),
+        modifier = modifier.size(200.dp)
     )
 }
+
+
+
+
 
 @Composable
 fun OnError(retryAction:()->Unit, modifier: Modifier = Modifier){
