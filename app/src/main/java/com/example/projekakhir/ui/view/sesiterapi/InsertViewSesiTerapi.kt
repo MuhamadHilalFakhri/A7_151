@@ -32,8 +32,8 @@ import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.model.Terapis
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.custom.CostumeTopAppBar
-import com.example.projekakhir.ui.custom.Dropdown
+import com.example.projekakhir.ui.customwidget.CostumeTopAppBar
+import com.example.projekakhir.ui.customwidget.Dropdown
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiEvent
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiState

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.customwidget.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.jenisterapi.DetailJenisTerapiUiState
 import com.example.projekakhir.ui.viewmodel.jenisterapi.DetailJenisTerapiViewModel

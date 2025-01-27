@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui.custom
+package com.example.projekakhir.ui.customwidget
 
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.mutableStateOf

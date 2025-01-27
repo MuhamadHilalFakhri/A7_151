@@ -48,7 +48,7 @@ import androidx.navigation.NavController
 import com.example.projekakhir.R
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.custom.HamburgerMenu
+import com.example.projekakhir.ui.customwidget.HamburgerMenu
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
 import com.example.projekakhir.ui.viewmodel.pasien.HomeViewModelPasien

@@ -1,4 +1,4 @@
-package com.example.projekakhir.ui.custom
+package com.example.projekakhir.ui.customwidget
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.WindowInsets

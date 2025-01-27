@@ -30,7 +30,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,9 +44,7 @@ import androidx.navigation.NavController
 import com.example.projekakhir.R
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.custom.CostumeTopAppBar
-import com.example.projekakhir.ui.custom.HamburgerMenu
-import com.example.projekakhir.ui.view.pasien.DestinasiHomePasien
+import com.example.projekakhir.ui.customwidget.HamburgerMenu
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.jenisterapi.HomeUiStateJenisTerapi
 import com.example.projekakhir.ui.viewmodel.jenisterapi.HomeViewModelJenisTerapi

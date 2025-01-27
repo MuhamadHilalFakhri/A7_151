@@ -1,7 +1,6 @@
 package com.example.projekakhir.ui.view.pasien
 
 import android.app.DatePickerDialog
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.customwidget.CostumeTopAppBar
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienUiEvent
 import com.example.projekakhir.ui.viewmodel.pasien.InsertPasienUiState
