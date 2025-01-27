@@ -46,44 +46,17 @@ fun HamburgerMenu(
 
     // Logic for menu items based on current page
     val menuItems = when (currentPage) {
-        "home sesi terapi" -> {
-            // When in Home Sesi Terapis, show Pasien, Terapis, Jenis Terapi
-            listOf("Pasien", "Terapis", "Jenis Terapi")
-        }
-        "home pasien" -> {
-            // When in Home Pasien, show Terapis, Jenis Terapi, Sesi Terapi
-            listOf("Terapis", "Jenis Terapi", "Sesi Terapi")
-        }
-        "homejenis" -> {
-            // When in Home Pasien, show Terapis, Jenis Terapi, Sesi Terapi
-            listOf("Pasien","Terapis", "Sesi Terapi")
-        }
-        "hometrps" -> {
-            // When in Home Pasien, show Terapis, Jenis Terapi, Sesi Terapi
-            listOf("Pasien","Jenis Terapi", "Sesi Terapi")
-        }
-        else -> {
-            // Default menu items for other pages
-            listOf("Terapis", "Pasien", "Jenis Terapi")
-        }
+        "home sesi terapi" -> listOf("Pasien", "Terapis", "Jenis Terapi")
+        "home pasien" -> listOf("Terapis", "Jenis Terapi", "Sesi Terapi")
+        "homejenis" -> listOf("Pasien", "Terapis", "Sesi Terapi")
+        "hometrps" -> listOf("Pasien", "Jenis Terapi", "Sesi Terapi")
+        else -> listOf("Terapis", "Pasien", "Jenis Terapi","Sesi Terapi")
     }
 
     CenterAlignedTopAppBar(
         title = { Text(title, color = Color.White) },
-        actions = {
-            // Refresh Icon
-            if (showRefreshIcon) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = "Refresh",
-                    modifier = Modifier
-                        .padding(end = 8.dp) // Optional padding
-                        .clickable { onRefresh() },
-                    tint = Color.White
-                )
-            }
-
-            // Hamburger Menu Icon
+        navigationIcon = {
+            // Hamburger Menu Icon on the Left
             IconButton(onClick = { expanded.value = true }) {
                 Icon(
                     imageVector = Icons.Default.Menu,
@@ -97,11 +70,9 @@ fun HamburgerMenu(
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }
             ) {
-                // Loop through the menu items based on the current page
                 menuItems.forEach { menuItem ->
                     DropdownMenuItem(
                         onClick = {
-                            // Navigate to the corresponding route based on menu item
                             when (menuItem) {
                                 "Pasien" -> navController.navigate("home pasien")
                                 "Terapis" -> navController.navigate("hometrps")
@@ -115,24 +86,25 @@ fun HamburgerMenu(
                 }
             }
         },
-        modifier = modifier
-            .windowInsetsPadding(
-                WindowInsets.systemBars.only(WindowInsetsSides.Top)
-            ),
-        scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
+        actions = {
+            // Refresh Icon
+            if (showRefreshIcon) {
+                IconButton(onClick = onRefresh) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Refresh",
                         tint = Color.White
                     )
                 }
             }
         },
+        modifier = modifier.windowInsetsPadding(
+            WindowInsets.systemBars.only(WindowInsetsSides.Top)
+        ),
+        scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color(0xFF003f5c)
         )
     )
 }
+
