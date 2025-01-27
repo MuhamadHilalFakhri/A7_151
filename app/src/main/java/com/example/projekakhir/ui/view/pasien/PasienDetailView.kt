@@ -128,24 +128,6 @@ fun BodyDetailPasien(
                     )
                 }
 
-                // Tombol berada di bawah container detail
-//                FloatingActionButton(
-//                    onClick = {
-//                        navController.navigate(DestinasiHomeSesiTerapi.route) // Navigasi ke halaman sesi terapi
-//                    },
-//                    containerColor = Color(0xFF003f5c),
-//                    modifier = Modifier
-//                        .padding(16.dp)
-//                        .align(Alignment.BottomEnd), // Menempatkan FAB di kanan bawah
-//                    shape = MaterialTheme.shapes.medium // Bentuk bulat default FAB
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.KeyboardArrowRight,
-//                        contentDescription = "Arrow End",
-//                        tint = Color.White
-//                    )
-//                }
-
             }
         }
 
