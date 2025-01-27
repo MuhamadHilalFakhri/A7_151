@@ -80,7 +80,8 @@ fun DetailSesiTerapiView(
         BodyDetailSesiTerapi(
             modifier = Modifier.padding(innerPadding),
             detailUiState = detailUiState,
-            retryAction = { viewModel.getDetailSesiTerapi() }
+            retryAction = { viewModel.getDetailSesiTerapi() },
+            viewModel = viewModel(factory = PenyediaViewModel.Factory)
         )
     }
 }
@@ -89,7 +90,8 @@ fun DetailSesiTerapiView(
 fun BodyDetailSesiTerapi(
     modifier: Modifier = Modifier,
     detailUiState: DetailSesiUiState,
-    retryAction: () -> Unit = {}
+    retryAction: () -> Unit = {},
+    viewModel: DetailSesiTerapiViewModel
 ) {
     when (detailUiState) {
         is DetailSesiUiState.Loading -> {
@@ -102,7 +104,10 @@ fun BodyDetailSesiTerapi(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                ItemDetailSesiTerapi(sesiTerapi = detailUiState.sesiTerapi)
+                ItemDetailSesiTerapi(
+                    sesiTerapi = detailUiState.sesiTerapi,
+                    viewModel = viewModel
+                )
             }
         }
 
@@ -119,9 +124,11 @@ fun BodyDetailSesiTerapi(
     }
 }
 
+
 @Composable
 fun ItemDetailSesiTerapi(
-    sesiTerapi: SesiTerapi
+    sesiTerapi: SesiTerapi,
+    viewModel: DetailSesiTerapiViewModel
 ) {
     val formattedTanggalSesi = remember(sesiTerapi.tanggal_sesi) {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -139,13 +146,22 @@ fun ItemDetailSesiTerapi(
         Column(modifier = Modifier.padding(16.dp)) {
             ComponentDetailSesi(judul = "ID Sesi", isinya = sesiTerapi.id_sesi.toString())
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailSesi(judul = "ID Pasien", isinya = sesiTerapi.id_pasien.toString())
+            ComponentDetailSesi(
+                judul = "Pasien",
+                isinya = viewModel.getNamaPasien(sesiTerapi.id_pasien)
+            )
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailSesi(judul = "ID Terapis", isinya = sesiTerapi.id_terapis.toString())
+            ComponentDetailSesi(
+                judul = "Terapis",
+                isinya = viewModel.getNamaTerapis(sesiTerapi.id_terapis)
+            )
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailSesi(judul = "ID Jenis Terapi", isinya = sesiTerapi.id_jenis_terapi.toString())
+            ComponentDetailSesi(
+                judul = "Jenis Terapi",
+                isinya = viewModel.getNamaJenisTerapi(sesiTerapi.id_jenis_terapi)
+            )
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailSesi(judul = "Tanggal Sesi", isinya = formattedTanggalSesi) // Display formatted date here
+            ComponentDetailSesi(judul = "Tanggal Sesi", isinya = formattedTanggalSesi)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailSesi(
                 judul = "Catatan Sesi",
@@ -154,6 +170,7 @@ fun ItemDetailSesiTerapi(
         }
     }
 }
+
 
 @Composable
 fun ComponentDetailSesi(
