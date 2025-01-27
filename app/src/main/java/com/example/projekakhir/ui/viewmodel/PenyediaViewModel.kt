@@ -49,7 +49,16 @@ object PenyediaViewModel{
                 pasienRepository = aplikasiTerapi().container.pasienRepository
             )
         }
-        initializer { DetailSesiTerapiViewModel(createSavedStateHandle(),aplikasiTerapi().container.sesiTerapiRepository) }
+        initializer {
+            DetailSesiTerapiViewModel(
+                createSavedStateHandle(),
+                aplikasiTerapi().container.sesiTerapiRepository,
+                aplikasiTerapi().container.jenisTerapiRepository,
+                aplikasiTerapi().container.terapisRepository,
+                aplikasiTerapi().container.pasienRepository,
+            )
+        }
+
         initializer {
             UpdateSesiTerapiViewModel(
                 createSavedStateHandle(),
