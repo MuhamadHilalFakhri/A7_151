@@ -40,7 +40,14 @@ object PenyediaViewModel{
         initializer { DetailJenisTerapiViewModel(createSavedStateHandle(),aplikasiTerapi().container.jenisTerapiRepository) }
         initializer { UpdateJenisTerapiViewModel(createSavedStateHandle(),aplikasiTerapi().container.jenisTerapiRepository) }
 
-        initializer { HomeViewModelSesiTerapi(aplikasiTerapi().container.sesiTerapiRepository) }
+        initializer {
+            HomeViewModelSesiTerapi(
+                sesiTerapiRepo = aplikasiTerapi().container.sesiTerapiRepository,
+                pasienRepository = aplikasiTerapi().container.pasienRepository,
+                jenisTerapiRepository = aplikasiTerapi().container.jenisTerapiRepository,
+                terapisRepository = aplikasiTerapi().container.terapisRepository
+            )
+        }
         initializer {
             InsertSesiTerapiViewModel(
                 sesiTerapiRepository = aplikasiTerapi().container.sesiTerapiRepository,
