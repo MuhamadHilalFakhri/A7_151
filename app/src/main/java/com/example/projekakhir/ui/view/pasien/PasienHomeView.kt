@@ -1,6 +1,7 @@
 package com.example.projekakhir.ui.view.pasien
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,13 +12,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -213,10 +219,10 @@ fun PasienCard(
     modifier: Modifier = Modifier,
     onDeleteClick: (Pasien) -> Unit = {}
 ) {
-    // State to track whether the dialog is visible
+    var isExpanded by remember { mutableStateOf(false) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
-    // Format tanggal menggunakan SimpleDateFormat
+    // Format tanggal using SimpleDateFormat
     val formattedTanggalLahir = remember(pasien.tanggal_lahir) {
         try {
             val utcFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -231,53 +237,76 @@ fun PasienCard(
     }
 
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF003f5c))
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Add the person icon to the left of the patient's name
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Person Icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp) // Adjust size as needed
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Space between icon and name
                 Text(
                     text = pasien.nama_pasien,
                     style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.weight(1f))
-                IconButton(onClick = { showConfirmationDialog = true }) {
+                IconButton(
+                    onClick = { isExpanded = !isExpanded },
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
+                        imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.ArrowDropDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
                         tint = Color.White
                     )
                 }
             }
+            AnimatedVisibility(visible = isExpanded) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Text(
+                        text = "Alamat: ${pasien.alamat}",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                    )
+                    Text(
+                        text = "Nomor Telepon: ${pasien.nomor_telepon}",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                    )
+                    Text(
+                        text = "Tanggal Lahir: $formattedTanggalLahir",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                    )
 
-            Text(
-                text = "Alamat: ${pasien.alamat}",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-            )
-            Text(
-                text = "Nomor Telepon: ${pasien.nomor_telepon}",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-            )
-            Text(
-                text = "Tanggal Lahir: $formattedTanggalLahir",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-            )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    IconButton(onClick = { showConfirmationDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Patient",
+                            tint = Color(0xFFF95959)
+                        )
+                    }
+                }
+            }
         }
     }
 
-    // Show confirmation dialog
+    // Show confirmation dialog for deletion
     if (showConfirmationDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmationDialog = false },
@@ -299,3 +328,6 @@ fun PasienCard(
         )
     }
 }
+
+
+
