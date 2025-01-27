@@ -1,7 +1,4 @@
-import android.app.AlertDialog
-import android.content.Context
 import android.app.DatePickerDialog
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,18 +9,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +25,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,7 +33,7 @@ import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.model.Terapis
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
-import com.example.projekakhir.ui.custom.DropdownSelector
+import com.example.projekakhir.ui.custom.Dropdown
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiEvent
 import com.example.projekakhir.ui.viewmodel.sesiterapi.InsertSesiTerapiUiState
@@ -181,7 +172,7 @@ fun FormInputSesiTerapi(
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
         // Dropdown Pasien
-        DropdownSelector(
+        Dropdown(
             label = "Pilih Pasien",
             items = pasienList.map { it.nama_pasien }, // Assuming Pasien has a 'nama' field
             selectedItem = pasienList.find { it.id_pasien == insertUiEvent.idPasien }?.nama_pasien ?: "",
@@ -194,7 +185,7 @@ fun FormInputSesiTerapi(
         )
 
         // Dropdown Jenis Terapi
-        DropdownSelector(
+        Dropdown(
             label = "Pilih Jenis Terapi",
             items = jenisTerapiList.map { it.nama_jenis_terapi }, // Assuming JenisTerapi has a 'nama' field
             selectedItem = jenisTerapiList.find { it.id_jenis_terapi == insertUiEvent.idJenisTerapi }?.nama_jenis_terapi ?: "",
@@ -207,7 +198,7 @@ fun FormInputSesiTerapi(
         )
 
         // Dropdown Terapis
-        DropdownSelector(
+        Dropdown(
             label = "Pilih Terapis",
             items = terapisList.map { it.nama_terapis }, // Assuming Terapis has a 'nama' field
             selectedItem = terapisList.find { it.id_terapis == insertUiEvent.idTerapis }?.nama_terapis ?: "",

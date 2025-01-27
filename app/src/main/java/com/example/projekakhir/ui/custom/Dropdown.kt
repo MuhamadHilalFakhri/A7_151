@@ -19,7 +19,7 @@ import androidx.compose.ui.zIndex
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownSelector(
+fun Dropdown(
     label: String,
     items: List<String>,
     selectedItem: String,
