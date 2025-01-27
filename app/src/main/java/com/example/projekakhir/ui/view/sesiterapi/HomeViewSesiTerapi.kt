@@ -19,10 +19,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.projekakhir.R
 import com.example.projekakhir.model.SesiTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.custom.HamburgerMenu
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.sesiterapi.HomeUiState
 import com.example.projekakhir.ui.viewmodel.sesiterapi.HomeViewModelSesiTerapi
@@ -40,7 +42,8 @@ fun HomeSesiTerapi(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},
-    viewModel: HomeViewModelSesiTerapi = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeViewModelSesiTerapi = viewModel(factory = PenyediaViewModel.Factory),
+    navController: NavController // Added navController as a parameter
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val (showDeleteDialog, setShowDeleteDialog) = remember { mutableStateOf(false) }
@@ -49,13 +52,15 @@ fun HomeSesiTerapi(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CostumeTopAppBar(
+            HamburgerMenu(
                 title = DestinasiHomeSesiTerapi.titleRes,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 onRefresh = {
                     viewModel.getSesiTerapi()
-                }
+                },
+                navController = navController, // Pass navController here
+                currentPage = DestinasiHomeSesiTerapi.route // Menambahkan currentPage yang sesuai
             )
         },
         floatingActionButton = {
@@ -65,8 +70,7 @@ fun HomeSesiTerapi(
                 modifier = Modifier.padding(18.dp),
                 containerColor = Color(0xFF4A90E2)
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Sesi Terapi",
-                    tint = Color.White)
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Sesi Terapi", tint = Color.White)
             }
         },
     ) { innerPadding ->
@@ -113,6 +117,7 @@ fun HomeSesiTerapi(
         )
     }
 }
+
 
 @Composable
 fun HomeStatusSesiTerapi(

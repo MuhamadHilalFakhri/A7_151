@@ -44,10 +44,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.projekakhir.R
 import com.example.projekakhir.model.Terapis
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.custom.HamburgerMenu
+import com.example.projekakhir.ui.view.jenisterapi.DestinasiHomeJenisTerapi
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.terapis.HomeUiState
 import com.example.projekakhir.ui.viewmodel.terapis.HomeViewModelTerapis
@@ -63,20 +66,23 @@ fun HomeScreenTerapis(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},
-    viewModel: HomeViewModelTerapis = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeViewModelTerapis = viewModel(factory = PenyediaViewModel.Factory),
+    navController: NavController
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CostumeTopAppBar(
+            HamburgerMenu(
                 title = DestinasiHomeTerapis.titleRes,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 onRefresh = {
                     viewModel.getTerapis()
-                }
+                },
+                navController = navController, // Pass navController here
+                currentPage = DestinasiHomeTerapis.route
             )
         },
         floatingActionButton = {

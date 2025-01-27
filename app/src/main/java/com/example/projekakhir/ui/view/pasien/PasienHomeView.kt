@@ -44,10 +44,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.projekakhir.R
 import com.example.projekakhir.model.Pasien
 import com.example.projekakhir.navigation.DestinasiNavigasi
-import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.custom.HamburgerMenu
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.pasien.HomeUiState
 import com.example.projekakhir.ui.viewmodel.pasien.HomeViewModelPasien
@@ -55,7 +56,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-object DestinasiHome : DestinasiNavigasi {
+object DestinasiHomePasien : DestinasiNavigasi {
     override val route = "home pasien"
     override val titleRes = "Home Pasien"
 }
@@ -66,20 +67,23 @@ fun HomeScreenPasien(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},
-    viewModel: HomeViewModelPasien = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeViewModelPasien = viewModel(factory = PenyediaViewModel.Factory),
+    navController: NavController
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CostumeTopAppBar(
-                title = DestinasiHome.titleRes,
+            HamburgerMenu(
+                title = DestinasiHomePasien.titleRes,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 onRefresh = {
                     viewModel.getPasien()
-                }
+                },
+                navController = navController, // Pass navController here
+                currentPage = DestinasiHomePasien.route
             )
         },
         floatingActionButton = {

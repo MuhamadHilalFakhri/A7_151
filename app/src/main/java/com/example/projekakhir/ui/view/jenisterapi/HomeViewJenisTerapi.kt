@@ -41,10 +41,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.projekakhir.R
 import com.example.projekakhir.model.JenisTerapi
 import com.example.projekakhir.navigation.DestinasiNavigasi
 import com.example.projekakhir.ui.custom.CostumeTopAppBar
+import com.example.projekakhir.ui.custom.HamburgerMenu
+import com.example.projekakhir.ui.view.pasien.DestinasiHomePasien
 import com.example.projekakhir.ui.viewmodel.PenyediaViewModel
 import com.example.projekakhir.ui.viewmodel.jenisterapi.HomeUiStateJenisTerapi
 import com.example.projekakhir.ui.viewmodel.jenisterapi.HomeViewModelJenisTerapi
@@ -60,7 +63,8 @@ fun HomeScreenJenisTerapi(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},
-    viewModel: HomeViewModelJenisTerapi = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeViewModelJenisTerapi = viewModel(factory = PenyediaViewModel.Factory),
+    navController: NavController
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val (showDeleteDialog, setShowDeleteDialog) = remember { mutableStateOf(false) }
@@ -69,13 +73,15 @@ fun HomeScreenJenisTerapi(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CostumeTopAppBar(
+            HamburgerMenu(
                 title = DestinasiHomeJenisTerapi.titleRes,
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior,
                 onRefresh = {
                     viewModel.getJenisTerapi()
-                }
+                },
+                navController = navController, // Pass navController here
+                currentPage = DestinasiHomeJenisTerapi.route
             )
         },
         floatingActionButton = {
