@@ -7,7 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -81,9 +83,11 @@ fun HomeSesiTerapi(
             onDeleteClick = { sesiTerapi ->
                 itemToDelete.value = sesiTerapi
                 setShowDeleteDialog(true)
-            }
+            },
+            viewModel = viewModel // Pass the viewModel here
         )
     }
+
 
     // Confirmation dialog for deletion
     if (showDeleteDialog && itemToDelete.value != null) {
@@ -124,7 +128,8 @@ fun HomeStatusSesiTerapi(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     onDeleteClick: (SesiTerapi) -> Unit = {},
-    onDetailClick: (Int) -> Unit
+    onDetailClick: (Int) -> Unit,
+    viewModel: HomeViewModelSesiTerapi
 ) {
     when (homeUiState) {
         is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
@@ -139,7 +144,8 @@ fun HomeStatusSesiTerapi(
                     sesiTerapi = homeUiState.sesiTerapi,
                     modifier = modifier.fillMaxWidth(),
                     onDetailClick = { onDetailClick(it.id_sesi) },
-                    onDeleteClick = { onDeleteClick(it) }
+                    onDeleteClick = { onDeleteClick(it) },
+                    viewModel = viewModel
                 )
             }
         is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
@@ -175,6 +181,7 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 
 @Composable
 fun SesiTerapiLayout(
+    viewModel: HomeViewModelSesiTerapi,
     sesiTerapi: List<SesiTerapi>,
     modifier: Modifier = Modifier,
     onDetailClick: (SesiTerapi) -> Unit,
@@ -191,7 +198,8 @@ fun SesiTerapiLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onDetailClick(sesi) },
-                onDeleteClick = { onDeleteClick(sesi) }
+                onDeleteClick = { onDeleteClick(sesi) },
+                viewModel = viewModel
             )
         }
     }
@@ -200,12 +208,17 @@ fun SesiTerapiLayout(
 @Composable
 fun SesiTerapiCard(
     sesiTerapi: SesiTerapi,
+    viewModel: HomeViewModelSesiTerapi,
     modifier: Modifier = Modifier,
     onDeleteClick: (SesiTerapi) -> Unit = {}
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
-    // Format tanggal sesi
+    val namaPasien = viewModel.getNamaPasien(sesiTerapi.id_pasien)
+    val namaTerapis = viewModel.getNamaTerapis(sesiTerapi.id_terapis)
+    val namaJenisTerapi = viewModel.getNamaJenisTerapi(sesiTerapi.id_jenis_terapi)
+
     val formattedTanggalSesi = remember(sesiTerapi.tanggal_sesi) {
         try {
             val utcFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -220,54 +233,55 @@ fun SesiTerapiCard(
     }
 
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF003f5c)) // Dark background color
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF003f5c))
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Sesi Terapi ID: ${sesiTerapi.id_sesi}",
-                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White), // White text for visibility
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
+                    modifier = Modifier.weight(1f)
                 )
-                Spacer(Modifier.weight(1f))
+                IconButton(onClick = { isExpanded = !isExpanded }) {
+                    Icon(
+                        imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
                 IconButton(onClick = { showConfirmationDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = null,
-                        tint = Color.White // White icon tint
+                        tint = Color(0xFFF95959)
                     )
                 }
             }
-
-            Text(
-                text = "Tanggal Sesi: $formattedTanggalSesi",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White) // White text for details
-            )
-            Text(
-                text = "Catatan: ${sesiTerapi.catatan_sesi ?: "Tidak ada catatan"}",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
-            )
+            if (isExpanded) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Text("Nama Pasien: $namaPasien", color = Color.White)
+                    Text("Nama Terapis: $namaTerapis", color = Color.White)
+                    Text("Jenis Terapi: $namaJenisTerapi", color = Color.White)
+                    Text("Tanggal Sesi: $formattedTanggalSesi", color = Color.White)
+                    Text("Catatan: ${sesiTerapi.catatan_sesi ?: "Tidak ada catatan"}", color = Color.White)
+                }
+            }
         }
     }
 
-    // Show confirmation dialog
     if (showConfirmationDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmationDialog = false },
-            title = { Text(text = "Konfirmasi") },
-            text = { Text(text = "Apakah Anda yakin ingin menghapus sesi terapi ID: ${sesiTerapi.id_sesi}?") },
+            title = { Text("Konfirmasi") },
+            text = { Text("Apakah Anda yakin ingin menghapus sesi terapi ID: ${sesiTerapi.id_sesi}?") },
             confirmButton = {
                 Button(onClick = {
                     showConfirmationDialog = false
