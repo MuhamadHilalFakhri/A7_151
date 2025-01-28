@@ -86,7 +86,7 @@ data class InsertSesiTerapiUiEvent(
     val idTerapis: Int = 0,
     val idJenisTerapi: Int = 0,
     val tanggalSesi: String = "",
-    val catatanSesi: String? = null
+    val catatanSesi: String = ""
 )
 
 // Extension Function

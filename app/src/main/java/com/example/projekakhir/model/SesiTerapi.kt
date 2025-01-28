@@ -9,7 +9,7 @@ data class SesiTerapi(
     val id_terapis: Int,
     val id_jenis_terapi: Int,
     val tanggal_sesi: String,
-    val catatan_sesi: String? = null //Catatan sesi opsional
+    val catatan_sesi: String
 )
 
 @Serializable
