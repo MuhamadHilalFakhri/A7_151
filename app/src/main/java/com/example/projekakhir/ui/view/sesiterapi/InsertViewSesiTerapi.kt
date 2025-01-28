@@ -175,7 +175,7 @@ fun FormInputSesiTerapi(
         Dropdown(
             label = "Pilih Pasien",
             items = pasienList.map { it.nama_pasien }, // Assuming Pasien has a 'nama' field
-            selectedItem = pasienList.find { it.id_pasien == insertUiEvent.idPasien }?.nama_pasien ?: "",
+            currentItem = pasienList.find { it.id_pasien == insertUiEvent.idPasien }?.nama_pasien ?: "",
             onItemSelected = { selected ->
                 val selectedPasien = pasienList.find { it.nama_pasien == selected }
                 selectedPasien?.let {
@@ -188,7 +188,7 @@ fun FormInputSesiTerapi(
         Dropdown(
             label = "Pilih Jenis Terapi",
             items = jenisTerapiList.map { it.nama_jenis_terapi }, // Assuming JenisTerapi has a 'nama' field
-            selectedItem = jenisTerapiList.find { it.id_jenis_terapi == insertUiEvent.idJenisTerapi }?.nama_jenis_terapi ?: "",
+            currentItem = jenisTerapiList.find { it.id_jenis_terapi == insertUiEvent.idJenisTerapi }?.nama_jenis_terapi ?: "",
             onItemSelected = { selected ->
                 val selectedJenisTerapi = jenisTerapiList.find { it.nama_jenis_terapi == selected }
                 selectedJenisTerapi?.let {
@@ -201,7 +201,7 @@ fun FormInputSesiTerapi(
         Dropdown(
             label = "Pilih Terapis",
             items = terapisList.map { it.nama_terapis }, // Assuming Terapis has a 'nama' field
-            selectedItem = terapisList.find { it.id_terapis == insertUiEvent.idTerapis }?.nama_terapis ?: "",
+            currentItem = terapisList.find { it.id_terapis == insertUiEvent.idTerapis }?.nama_terapis ?: "",
             onItemSelected = { selected ->
                 val selectedTerapis = terapisList.find { it.nama_terapis == selected }
                 selectedTerapis?.let {

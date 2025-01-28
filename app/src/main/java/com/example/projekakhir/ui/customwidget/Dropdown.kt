@@ -22,19 +22,25 @@ import androidx.compose.ui.zIndex
 fun Dropdown(
     label: String,
     items: List<String>,
-    selectedItem: String,
+    currentItem: String,
     onItemSelected: (String) -> Unit,
     enabled: Boolean = true
 ) {
     var expanded by remember { mutableStateOf(false) } // State untuk mengatur apakah dropdown terbuka
-    var selectedText by remember { mutableStateOf(selectedItem) } // State untuk teks terpilih
+    var currentText by remember { mutableStateOf(currentItem) } // State untuk teks terpilih
+
+
+    // Memastikan selectedText diperbarui dengan benar
+    if (currentText != currentItem) {
+        currentText = currentItem
+    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded } // Mengatur status expand
     ) {
         OutlinedTextField(
-            value = selectedText,
+            value = currentText,
             onValueChange = {}, // Tidak perlu perubahan pada input ini
             label = { Text(label) },
             modifier = Modifier
@@ -56,7 +62,7 @@ fun Dropdown(
                 DropdownMenuItem(
                     text = { Text(text = item) },
                     onClick = {
-                        selectedText = item // Memperbarui teks yang dipilih
+                        currentText = item // Memperbarui teks yang dipilih
                         onItemSelected(item) // Callback ke komponen pemanggil
                         expanded = false // Menutup dropdown setelah item dipilih
                     }
