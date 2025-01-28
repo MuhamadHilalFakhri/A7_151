@@ -1,5 +1,6 @@
 package com.example.projekakhir.ui.customwidget
 
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.clickable
@@ -68,7 +69,8 @@ fun HamburgerMenu(
             // Dropdown Menu for Hamburger
             DropdownMenu(
                 expanded = expanded.value,
-                onDismissRequest = { expanded.value = false }
+                onDismissRequest = { expanded.value = false },
+                modifier = Modifier.background(Color(0xFFADD8E6)) // Set background color to light blue
             ) {
                 menuItems.forEach { menuItem ->
                     DropdownMenuItem(
