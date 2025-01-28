@@ -1,5 +1,6 @@
 package com.example.projekakhir.ui.view.sesiterapi
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,8 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.projekakhir.R
@@ -235,19 +239,19 @@ fun SesiTerapiCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(16.dp),
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF003f5c))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Sesi Terapi ID: ${sesiTerapi.id_sesi}",
-                    style = MaterialTheme.typography.titleLarge.copy(color = Color.White),
+                    style = TextStyle(color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = { isExpanded = !isExpanded }) {
@@ -265,17 +269,18 @@ fun SesiTerapiCard(
                     )
                 }
             }
-            if (isExpanded) {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    Text("Nama Pasien: $namaPasien", color = Color.White)
-                    Text("Nama Terapis: $namaTerapis", color = Color.White)
-                    Text("Jenis Terapi: $namaJenisTerapi", color = Color.White)
-                    Text("Tanggal Sesi: $formattedTanggalSesi", color = Color.White)
-                    Text("Catatan: ${sesiTerapi.catatan_sesi ?: "Tidak ada catatan"}", color = Color.White)
+            AnimatedVisibility(visible = isExpanded) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Pasien: $namaPasien", style = TextStyle(color = Color.White, fontSize = 16.sp))
+                    Text("Terapis: $namaTerapis", style = TextStyle(color = Color.White, fontSize = 16.sp))
+                    Text("Jenis Terapi: $namaJenisTerapi", style = TextStyle(color = Color.White, fontSize = 16.sp))
+                    Text("Tanggal Sesi: $formattedTanggalSesi", style = TextStyle(color = Color.White, fontSize = 16.sp))
+                    Text("Catatan: ${sesiTerapi.catatan_sesi ?: "Tidak ada catatan"}", style = TextStyle(color = Color.White, fontSize = 16.sp))
                 }
             }
         }
     }
+
 
     if (showConfirmationDialog) {
         AlertDialog(

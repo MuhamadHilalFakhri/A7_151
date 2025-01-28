@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -40,20 +41,7 @@ fun UpdatePasienView(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val uiState = viewModel.uiState
-
-    // Format tanggal lahir yang diterima (UTC format)
-    val formattedTanggalLahir = remember(uiState.insertUiEvent?.tanggalLahir) {
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        try {
-            // Pastikan tanggal lahir yang diterima tidak kosong dan valid
-            val parsedDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                .parse(uiState.insertUiEvent?.tanggalLahir ?: "")
-            parsedDate?.let { format.format(it) } ?: uiState.insertUiEvent?.tanggalLahir
-        } catch (e: Exception) {
-            // Tangani tanggal yang tidak valid, kembalikan string kosong atau nilai default
-            uiState.insertUiEvent?.tanggalLahir ?: ""
-        }
-    }
+    val selectedDate = remember { mutableStateOf(uiState.insertUiEvent.tanggalLahir) }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -76,10 +64,11 @@ fun UpdatePasienView(
             // Entry Pasien Form Body
             EntryBodyPasien(
                 insertUiState = uiState.copy(
-                    insertUiEvent = uiState.insertUiEvent?.copy(tanggalLahir = formattedTanggalLahir) ?: uiState.insertUiEvent
+                    insertUiEvent = uiState.insertUiEvent.copy(tanggalLahir = selectedDate.value)
                 ),
                 onPasienValueChange = { updatedValue ->
                     viewModel.updatePasienState(updatedValue)
+                    selectedDate.value = updatedValue.tanggalLahir
                 },
                 onSaveClick = {
                     uiState.insertUiEvent?.let { insertUiEvent ->
@@ -96,4 +85,5 @@ fun UpdatePasienView(
         }
     }
 }
+
 

@@ -5,12 +5,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -171,7 +177,11 @@ fun FormInputJenisTerapi(
             label = { Text("Nama Jenis Terapi") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.List, contentDescription = "Nama Jenis Terapi")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         OutlinedTextField(
@@ -180,7 +190,11 @@ fun FormInputJenisTerapi(
             label = { Text("Deskripsi Terapi") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Info, contentDescription = "Deskripsi Terapi")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         if (enabled) {

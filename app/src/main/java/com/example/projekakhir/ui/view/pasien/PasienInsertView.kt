@@ -6,9 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -105,13 +110,12 @@ fun EntryBodyPasien(
             modifier = Modifier.fillMaxWidth(),
             enabled = isFormValid,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4A90E2), // Warna biru terang untuk background button
-                contentColor = Color.White // Warna putih untuk teks
+                containerColor = Color(0xFF4A90E2),
+                contentColor = Color.White
             )
         ) {
             Text(text = "Simpan")
         }
-
 
         if (showValidationDialog) {
             AlertDialog(
@@ -138,6 +142,7 @@ fun EntryBodyPasien(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormInputPasien(
@@ -146,7 +151,6 @@ fun FormInputPasien(
     onValueChange: (InsertPasienUiEvent) -> Unit = {},
     onValidationChange: (Boolean) -> Unit
 ) {
-
     var isNamaPasienValid by remember { mutableStateOf(true) }
     var isAlamatValid by remember { mutableStateOf(true) }
     var isNomorTeleponValid by remember { mutableStateOf(true) }
@@ -154,10 +158,9 @@ fun FormInputPasien(
     var isRiwayatMedikalValid by remember { mutableStateOf(true) }
 
     val context = LocalContext.current
-    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Date format
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val calendar = Calendar.getInstance()
 
-    // State to hold the selected date
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(insertUiEvent.tanggalLahir) }
 
@@ -174,7 +177,11 @@ fun FormInputPasien(
             label = { Text("Nama Pasien") },
             modifier = Modifier.fillMaxWidth(),
             isError = !isNamaPasienValid,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Person, contentDescription = "Nama Pasien")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         OutlinedTextField(
@@ -186,7 +193,11 @@ fun FormInputPasien(
             label = { Text("Alamat") },
             modifier = Modifier.fillMaxWidth(),
             isError = !isAlamatValid,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Alamat")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         OutlinedTextField(
@@ -198,30 +209,36 @@ fun FormInputPasien(
             label = { Text("Nomor Telepon") },
             modifier = Modifier.fillMaxWidth(),
             isError = !isNomorTeleponValid,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Phone, contentDescription = "Nomor Telepon")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
-        // Date Picker for Tanggal Lahir
         OutlinedTextField(
             value = selectedDate,
-            onValueChange = { }, // No need to change text directly
+            onValueChange = { },
             label = { Text("Tanggal Lahir") },
             modifier = Modifier.fillMaxWidth(),
-            readOnly = true, // Make the text field read-only
+            readOnly = true,
             isError = !isTanggalLahirValid,
-            trailingIcon = {
+            leadingIcon = {
                 IconButton(onClick = { showDatePickerDialog = true }) {
-                    Icon(imageVector = Icons.Default.DateRange, contentDescription = "Pick Date")
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = "Pick Date"
+                    )
                 }
-            }
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
-        // Show DatePicker Dialog
+
         if (showDatePickerDialog) {
             val datePickerDialog = DatePickerDialog(
                 context,
                 { _, year, month, dayOfMonth ->
-                    // Update the selected date after user selects a date
                     val selectedCalendar = Calendar.getInstance().apply {
                         set(year, month, dayOfMonth)
                     }
@@ -234,7 +251,7 @@ fun FormInputPasien(
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
             datePickerDialog.show()
-            showDatePickerDialog = false // Close dialog after showing
+            showDatePickerDialog = false
         }
 
         OutlinedTextField(
@@ -246,19 +263,21 @@ fun FormInputPasien(
             label = { Text("Riwayat Medikal") },
             modifier = Modifier.fillMaxWidth(),
             isError = !isRiwayatMedikalValid,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Info, contentDescription = "Riwayat Medikal")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
-        // Call validation callback after all fields are checked
         onValidationChange(
-            isNamaPasienValid &&
-                    isAlamatValid &&
-                    isNomorTeleponValid &&
-                    isTanggalLahirValid &&
-                    isRiwayatMedikalValid &&
-                    insertUiEvent.tanggalLahir.isNotBlank()
+            isNamaPasienValid && isAlamatValid && isNomorTeleponValid &&
+                    isTanggalLahirValid && insertUiEvent.tanggalLahir.isNotBlank() &&
+                    isRiwayatMedikalValid
         )
     }
 }
+
+
 
 

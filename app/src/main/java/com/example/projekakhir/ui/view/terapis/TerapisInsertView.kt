@@ -5,12 +5,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -170,7 +176,11 @@ fun FormInputTerapis(
             label = { Text("Nama Terapis") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Person, contentDescription = "Nama Terapis")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         OutlinedTextField(
@@ -179,7 +189,11 @@ fun FormInputTerapis(
             label = { Text("Spesialisasi") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Spesialisasi")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         OutlinedTextField(
@@ -188,7 +202,11 @@ fun FormInputTerapis(
             label = { Text("Nomor Izin Praktik") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Info, contentDescription = "Nomor Izin Praktik")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
         Divider(
@@ -197,3 +215,4 @@ fun FormInputTerapis(
         )
     }
 }
+

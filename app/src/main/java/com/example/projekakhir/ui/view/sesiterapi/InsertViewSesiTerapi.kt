@@ -1,12 +1,15 @@
 import android.app.DatePickerDialog
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,7 +68,6 @@ fun InsertSesiTerapiScreen(
     val jenisTerapiList = viewModel.listJnsTerapi
     val pasienList = viewModel.listPasien
 
-    // Use LaunchedEffect to load data only when the composable is first composed
     LaunchedEffect(Unit) {
         viewModel.loadExistingData()
     }
@@ -85,9 +87,7 @@ fun InsertSesiTerapiScreen(
             insertUiState = viewModel.uiState,
             onValueChange = viewModel::updateInsertSesiTerapiState,
             onSaveClick = {
-                // Validation before saving
                 if (validateFields(viewModel.uiState.insertUiEvent)) {
-                    // Show confirmation dialog
                     showConfirmationDialog(context, onConfirm = {
                         coroutineScope.launch {
                             viewModel.insertSesiTerapi()
@@ -95,7 +95,6 @@ fun InsertSesiTerapiScreen(
                         }
                     })
                 } else {
-                    // Show error message if fields are empty
                     showErrorDialog(context)
                 }
             },
@@ -110,8 +109,6 @@ fun InsertSesiTerapiScreen(
     }
 }
 
-
-
 @Composable
 fun InsertSesiTerapiBody(
     insertUiState: InsertSesiTerapiUiState,
@@ -124,9 +121,10 @@ fun InsertSesiTerapiBody(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(18.dp),
-        modifier = modifier.padding(12.dp)
+        modifier = modifier
+            .padding(12.dp)
+            .fillMaxWidth()
     ) {
-        // Form Input untuk Sesi Terapi
         FormInputSesiTerapi(
             insertUiEvent = insertUiState.insertUiEvent,
             onValueChange = onValueChange,
@@ -136,17 +134,16 @@ fun InsertSesiTerapiBody(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Button untuk Simpan Data
         Button(
             onClick = onSaveClick,
-            shape = MaterialTheme.shapes.small,
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4A90E2), // Warna biru terang untuk background button
-                contentColor = Color.White // Warna putih untuk teks
+                containerColor = Color(0xFF4A90E2),
+                contentColor = Color.White
             )
         ) {
-            Text(text = "Simpan")
+            Text(text = "Simpan", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -162,19 +159,20 @@ fun FormInputSesiTerapi(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Date format
+    val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val calendar = Calendar.getInstance()
 
-    // State to hold the selected date
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(insertUiEvent.tanggalSesi) }
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier
+    ) {
         // Dropdown Pasien
         Dropdown(
             label = "Pilih Pasien",
-            items = pasienList.map { it.nama_pasien }, // Assuming Pasien has a 'nama' field
+            items = pasienList.map { it.nama_pasien },
             currentItem = pasienList.find { it.id_pasien == insertUiEvent.idPasien }?.nama_pasien ?: "",
             onItemSelected = { selected ->
                 val selectedPasien = pasienList.find { it.nama_pasien == selected }
@@ -184,10 +182,14 @@ fun FormInputSesiTerapi(
             }
         )
 
+        if (insertUiEvent.idPasien == 0) {
+            Text("* Pasien harus dipilih", color = Color.Red, style = MaterialTheme.typography.bodySmall)
+        }
+
         // Dropdown Jenis Terapi
         Dropdown(
             label = "Pilih Jenis Terapi",
-            items = jenisTerapiList.map { it.nama_jenis_terapi }, // Assuming JenisTerapi has a 'nama' field
+            items = jenisTerapiList.map { it.nama_jenis_terapi },
             currentItem = jenisTerapiList.find { it.id_jenis_terapi == insertUiEvent.idJenisTerapi }?.nama_jenis_terapi ?: "",
             onItemSelected = { selected ->
                 val selectedJenisTerapi = jenisTerapiList.find { it.nama_jenis_terapi == selected }
@@ -197,10 +199,14 @@ fun FormInputSesiTerapi(
             }
         )
 
+        if (insertUiEvent.idJenisTerapi == 0) {
+            Text("* Jenis terapi harus dipilih", color = Color.Red, style = MaterialTheme.typography.bodySmall)
+        }
+
         // Dropdown Terapis
         Dropdown(
             label = "Pilih Terapis",
-            items = terapisList.map { it.nama_terapis }, // Assuming Terapis has a 'nama' field
+            items = terapisList.map { it.nama_terapis },
             currentItem = terapisList.find { it.id_terapis == insertUiEvent.idTerapis }?.nama_terapis ?: "",
             onItemSelected = { selected ->
                 val selectedTerapis = terapisList.find { it.nama_terapis == selected }
@@ -210,26 +216,33 @@ fun FormInputSesiTerapi(
             }
         )
 
+        if (insertUiEvent.idTerapis == 0) {
+            Text("* Terapis harus dipilih", color = Color.Red, style = MaterialTheme.typography.bodySmall)
+        }
+
         // Date Picker Button
         OutlinedTextField(
             value = selectedDate,
-            onValueChange = { }, // No need to change text directly
+            onValueChange = { },
             label = { Text("Tanggal Sesi") },
             modifier = Modifier.fillMaxWidth(),
-            readOnly = true, // Make the text field read-only
-            trailingIcon = {
+            readOnly = true,
+            leadingIcon = {
                 IconButton(onClick = { showDatePickerDialog = true }) {
                     Icon(imageVector = Icons.Default.DateRange, contentDescription = "Pick Date")
                 }
-            }
+            },
+            shape = RoundedCornerShape(12.dp)
         )
 
-        // Show DatePicker Dialog
+        if (selectedDate.isEmpty()) {
+            Text("* Tanggal sesi harus dipilih", color = Color.Red, style = MaterialTheme.typography.bodySmall)
+        }
+
         if (showDatePickerDialog) {
             val datePickerDialog = DatePickerDialog(
                 context,
                 { _, year, month, dayOfMonth ->
-                    // Update the selected date after user selects a date
                     val selectedCalendar = Calendar.getInstance().apply {
                         set(year, month, dayOfMonth)
                     }
@@ -242,7 +255,7 @@ fun FormInputSesiTerapi(
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
             datePickerDialog.show()
-            showDatePickerDialog = false // Close dialog after showing
+            showDatePickerDialog = false
         }
 
         // Input Catatan Sesi
@@ -251,7 +264,13 @@ fun FormInputSesiTerapi(
             onValueChange = { onValueChange(insertUiEvent.copy(catatanSesi = it)) },
             label = { Text("Catatan Sesi") },
             modifier = Modifier.fillMaxWidth(),
-            maxLines = 3
+            maxLines = 3,
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Info, contentDescription = "Catatan Sesi")
+            },
+            shape = RoundedCornerShape(12.dp)
         )
     }
 }
+
+
